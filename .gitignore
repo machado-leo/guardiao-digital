@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Segredos e configuração local
+.env
+.env.local
+
+# Índice vetorial gerado (a fonte é data/golpes/)
+data/index/
+*.faiss
+chroma/
+
+# Logs — nunca versionar: podem conter falas do usuário
+*.log
+logs/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
