@@ -1,5 +1,16 @@
 # 🛡️ Guardião Digital
 
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-State_Machine-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-RAG_(26_golpes)-FF6F00?style=for-the-badge)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT_%26_Embeddings-412991?style=for-the-badge)
+![FastAPI](https://img.shields.io/badge/FastAPI-Webhook-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Amazon Alexa](https://img.shields.io/badge/Amazon_Alexa-Skills_Kit-00CAFF?style=for-the-badge&logo=amazonalexa&logoColor=white)
+![Telegram](https://img.shields.io/badge/Telegram-Bot_API-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)
+![Langfuse](https://img.shields.io/badge/Langfuse-Observabilidade-000000?style=for-the-badge)
+![Pytest](https://img.shields.io/badge/Pytest-78_testes-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white)
+![LGPD](https://img.shields.io/badge/Privacidade-LGPD-2EA44F?style=for-the-badge)
+
 **Um assistente de voz que ajuda pessoas idosas a descobrir, na hora, se uma mensagem
 ou ligação é golpe, e avisa a família quando o risco é alto.**
 
@@ -50,8 +61,16 @@ flowchart LR
     F --> A
 ```
 
+- **Sessão:** cada fala traz o `sessionId` da Alexa, que vira o `thread_id` no checkpointer
+  do LangGraph. O nó `perguntar` pausa o grafo com `interrupt()` e devolve
+  `shouldEndSession: false`; a fala seguinte retoma a execução de onde parou, acumulando
+  as respostas parciais no estado.
 - **Interpretação:** regras com palavras-chave primeiro, que são rápidas e previsíveis. O
   GPT só entra quando as regras não entendem, e tira vários campos do relato numa chamada só.
+- **Base de golpes (RAG):** os 26 casos em `data/golpes/golpes.json` foram curados à mão de
+  fontes oficiais para evitar ruído na busca. Antes de comparar os textos no ChromaDB, a
+  busca filtra pelo mesmo pedido e remetente — assim um pedido de código nunca recebe a
+  orientação de um golpe de PIX.
 - **Risco:** é a soma de uma tabela de sinais explicáveis: pedido de senha ou código,
   número novo, urgência, instituição pedindo algo por mensagem, parecer com um golpe da
   base… Faixas: **baixo** (< 40), **médio** (40 a 69) e **alto** (≥ 70, avisa a família).
@@ -120,6 +139,8 @@ python -m pytest          # 78 testes, só com as regras (sem GPT, Langfuse nem 
 O passo a passo do console da Alexa, do beta test e da Echo Dot está em
 [`skill/README.md`](skill/README.md).
 
+<img src="skill/assets/skill-app-alexa.jpg" alt="Skill Guardião Digital ativa no aplicativo da Alexa" width="260" />
+
 ## Observabilidade
 
 Cada conversa vira uma sessão no Langfuse, com um trace por fala:
@@ -131,8 +152,8 @@ Cada conversa vira uma sessão no Langfuse, com um trace por fala:
 ## Cronograma
 
 - **Etapa 1 – Observe:** entregue (nota ponderada 9,35).
-- **Etapa 2 – Construa:** até 21/10.
-- **Etapa 3 – Apresente:** até 29/10, com a live final às 19h.
+- **Etapa 2 – Construa:** entrega até 20/10 (2º Ranking liberado em 21/10).
+- **Etapa 3 – Apresente:** de 21/10 a 29/10, com a live final às 19h.
 
 O que está feito e o que falta: [`docs/roadmap.md`](docs/roadmap.md).
 

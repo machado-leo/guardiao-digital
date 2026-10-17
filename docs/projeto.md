@@ -28,7 +28,19 @@ O Guardião substitui a espera pelo familiar por uma verificação imediata por 
 ## Arquitetura técnica
 A Alexa cuida só da voz (ouvir e falar); toda a decisão acontece no backend, dentro de um grafo de decisão em LangGraph.
 
-arquitetura · Alexa, backend, grafo de decisão, base de golpes e Telegram
+```mermaid
+flowchart LR
+    A["Alexa<br/>(skill Guardião Digital)"] -- HTTPS --> B["FastAPI<br/>POST /alexa"]
+    B --> P[planejar]
+    P -- falta informação --> Q["perguntar<br/>(pausa até a próxima fala)"]
+    Q --> P
+    P -- já dá para decidir --> C["consultar_base<br/>ChromaDB"]
+    C --> R["avaliar<br/>risco 0 a 100"]
+    R --> F["concluir<br/>fala pelo GPT"]
+    F -- risco alto --> T["avisar_familia<br/>Telegram"]
+    F --> A
+```
+
 A cada resposta do idoso, a Alexa envia o texto ao backend, o grafo atualiza o estado da conversa e devolve a próxima pergunta ou o veredito. Se o risco passar do limiar, o alerta vai para o Telegram da família.
 Tecnologias:
 - Voz: Alexa Skills Kit, skill personalizada "Guardião Digital", sessão aberta entre as perguntas (shouldEndSession: false).
@@ -75,8 +87,8 @@ Depende de a skill funcionar no aparelho (ver Riscos)
 Como defender na banca: o Google e o Gemini são fontes passivas para quem sabe pesquisar. O Guardião é uma verificação ativa, feita para quem não sabe o que perguntar, no momento em que o golpe acontece.
 Sobre a Alexa+: ela chegou ao Brasil em acesso antecipado em 18 de junho de 2026, gratuita até pelo menos 30 de outubro de 2026, e depois incluída no Prime ou por R$ 99,90/mês (Diário da Mídia, IstoÉ Dinheiro). Não afirme que o projeto é inédito nem que a Alexa "é burra".
 ## Escopo e cronograma
-O projeto cabe nas duas semanas restantes se o foco ficar no núcleo: conversa guiada, base de golpes, pontuação de risco e alerta à família. A Etapa 2 vai até 21/10 e a Etapa 3 termina em 29/10, com a live final às 19h (site do projeto).
-Etapa 2 – Construa (até 21/10)
+O projeto cabe nas duas semanas restantes se o foco ficar no núcleo: conversa guiada, base de golpes, pontuação de risco e alerta à família. Entregas da Etapa 2 feitas até 20/10 participam do 2º Ranking (liberado em 21/10), e a Etapa 3 abre em 21/10 e vai até 29/10, com a live final às 19h (site do projeto).
+Etapa 2 – Construa (entrega até 20/10 · 2º Ranking em 21/10)
 - ☑ Testar se uma skill de teste abre na Echo Dot com "Alexa, abre o Guardião Digital" (primeiro dia)
 - ☑ Montar o grafo no LangGraph com relato aberto e perguntas adaptativas
 - ☑ Criar a base de golpes curada à mão: 26 casos com fontes oficiais (Febraban, Banco Central, INSS, Correios, Receita Federal, CERT.br)
@@ -84,7 +96,7 @@ Etapa 2 – Construa (até 21/10)
 - ☑ Definir a regra de pontuação de risco (0 a 100) e o limiar para alertar a família
 - ☑ Criar o bot do Telegram que recebe o alerta
 - ☑ Testar tudo por texto (CLI e 78 testes automatizados) antes de ligar na Alexa
-Etapa 3 – Apresente (até 29/10)
+Etapa 3 – Apresente (de 21/10 a 29/10)
 - ☑ Ligar a skill da Alexa ao backend (endpoint HTTPS com túnel Cloudflare)
 - ☑ Ajustar o tempo de resposta para caber no limite da Alexa (entre 0,01 e ~3,5 s)
 - ☐ Gravar a comparação: a mesma pergunta na Alexa tradicional e no Guardião

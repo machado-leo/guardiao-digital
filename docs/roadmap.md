@@ -1,6 +1,6 @@
 # Roadmap — Guardião Digital
 
-Prazo final: **29/10**.
+Etapa 2 até **20/10** (2º Ranking em 21/10) · Etapa 3 de **21/10 a 29/10**.
 
 ## 1. Validações iniciais
 - [x] Criar a skill e confirmar que ela abre na Echo Dot (nome final: "Guardião Digital"; a Dot de outra conta acessa pelo beta test)
