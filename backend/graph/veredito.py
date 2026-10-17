@@ -61,10 +61,7 @@ SEM_SINAIS_FORTES = (
 )
 
 # Nada de dinheiro, dados, código ou link: não há o que confirmar, só tranquilizar.
-SEM_SINAIS = (
-    "Não vi sinais de golpe nessa situação. Se um dia pedirem dinheiro, senha ou código, "
-    "confirme antes com alguém de confiança."
-)
+SEM_SINAIS = "Pelo que você contou, não vi sinais de golpe. Se ficar com alguma dúvida, é só me chamar."
 
 AVISO_FAMILIA = " Vou avisar sua família para te ligar também."
 

@@ -57,7 +57,7 @@ def test_desculpa_so_e_perguntada_com_numero_novo():
 def test_nunca_autoriza_pagamento():
     turno = conversar("Minha neta", "Não, é o mesmo número", "Nada", "Não")
     assert "pode pagar" not in turno.fala.lower()
-    assert "confirme antes" in turno.fala.lower()
+    assert "não vi sinais de golpe" in turno.fala.lower()
 
 
 def test_falso_sequestro_avisa_a_familia():

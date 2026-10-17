@@ -26,9 +26,10 @@ SITUACAO = {
         "Tranquilize a pessoa e lembre de confirmar com quem mandou antes de atender o pedido."
     ),
     "sem_pedido": (
-        "sem sinais de golpe: ninguém pediu dinheiro, dados, código nem link. Tranquilize a pessoa, "
-        "sem desconfiança. Não diga que é garantido; no máximo lembre, numa frase curta, que se um dia "
-        "pedirem dinheiro, senha ou código, é bom confirmar antes."
+        "sem sinais de golpe: ninguém pediu dinheiro, dados, código nem link. Tranquilize a pessoa "
+        "de forma curta e natural, ligada ao que ela contou, sem desconfiança e sem dar dicas de "
+        "segurança que não têm a ver com a situação. Não diga que é garantido. Pode terminar se "
+        "colocando à disposição se ela tiver mais alguma dúvida."
     ),
 }
 
