@@ -20,6 +20,10 @@ def openai_configurado() -> bool:
     return bool(os.getenv("OPENAI_API_KEY"))
 
 
+def telegram_configurado() -> bool:
+    return bool(os.getenv("TELEGRAM_BOT_TOKEN")) and bool(os.getenv("TELEGRAM_CHAT_ID"))
+
+
 def langfuse_ativo() -> bool:
     ligado = os.getenv("LANGFUSE_ENABLED", "false").lower() == "true"
     return ligado and bool(os.getenv("LANGFUSE_PUBLIC_KEY")) and bool(os.getenv("LANGFUSE_SECRET_KEY"))

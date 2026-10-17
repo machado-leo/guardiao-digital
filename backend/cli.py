@@ -26,7 +26,10 @@ def main() -> None:
     finally:
         observabilidade.enviar_pendentes()
 
-    print(f"\n[risco {turno.risco}/100 · alerta à família: {'sim' if turno.alertar else 'não'}]")
+    alerta = "não"
+    if turno.alertar:
+        alerta = "enviado no Telegram" if turno.alerta_enviado else "sim (Telegram não configurado)"
+    print(f"\n[risco {turno.risco}/100 · alerta à família: {alerta}]")
     if turno.motivos:
         print(f"[motivos: {', '.join(turno.motivos)}]")
     if turno.golpe:

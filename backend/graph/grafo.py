@@ -1,7 +1,8 @@
 """Grafo de decisão em LangGraph.
 
     planejar ─┬─> perguntar ──> planejar      (enquanto houver pergunta)
-              └─> avaliar ──> consultar_base ──> concluir ──> fim
+              └─> avaliar ──> consultar_base ──> concluir ─┬─> avisar_familia ──> fim   (risco alto)
+                                                           └─> fim
 
 Cada pergunta pausa o grafo com interrupt(); a próxima fala do idoso retoma a
 execução de onde parou. O estado de cada conversa fica no checkpointer, pela
@@ -12,6 +13,7 @@ from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
+from backend.alerts.telegram import enviar_alerta, montar_mensagem
 from backend.graph.estado import Estado
 from backend.graph.interpretar import interpretar
 from backend.graph.perguntas import PERGUNTAS, proxima_pergunta
@@ -63,6 +65,11 @@ def concluir(estado: Estado) -> dict:
     return {"veredito": redigir_veredito(estado)}
 
 
+def avisar_familia(estado: Estado) -> dict:
+    texto = montar_mensagem(estado["risco"], estado["motivos"], estado.get("golpe"), estado["veredito"])
+    return {"alerta_enviado": enviar_alerta(texto) is not None}
+
+
 def _depois_de_planejar(estado: Estado) -> str:
     return "perguntar" if estado.get("proxima") else "avaliar"
 
@@ -74,11 +81,15 @@ def construir_grafo(checkpointer: BaseCheckpointSaver):
     grafo.add_node("avaliar", avaliar)
     grafo.add_node("consultar_base", consultar_base)
     grafo.add_node("concluir", concluir)
+    grafo.add_node("avisar_familia", avisar_familia)
 
     grafo.add_edge(START, "planejar")
     grafo.add_conditional_edges("planejar", _depois_de_planejar, ["perguntar", "avaliar"])
     grafo.add_edge("perguntar", "planejar")
     grafo.add_edge("avaliar", "consultar_base")
     grafo.add_edge("consultar_base", "concluir")
-    grafo.add_edge("concluir", END)
+    grafo.add_conditional_edges(
+        "concluir", lambda estado: "avisar_familia" if estado["alertar"] else END, ["avisar_familia", END]
+    )
+    grafo.add_edge("avisar_familia", END)
     return grafo.compile(checkpointer=checkpointer)

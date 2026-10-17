@@ -25,8 +25,8 @@ Prazo final: **29/10**.
 - [x] Criar a função de busca e ligá-la ao veredito, para a resposta citar o golpe parecido
 
 ## 5. Alerta à família (`backend/alerts/`)
-- [ ] Criar o bot do Telegram que recebe o alerta quando o risco passa do limiar
-- [ ] Definir uma mensagem curta e clara para o filho ou neto
+- [x] Criar o bot do Telegram que recebe o alerta quando o risco passa do limiar
+- [x] Definir uma mensagem curta e clara para o filho ou neto
 
 ## 6. Backend (`backend/`)
 - [ ] Criar o endpoint FastAPI no formato de requisição da Alexa
