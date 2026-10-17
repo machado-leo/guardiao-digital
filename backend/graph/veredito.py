@@ -7,8 +7,7 @@ garantir isso; a redação com GPT e a citação da base de golpes entram com o 
 import re
 
 from backend.graph.estado import Estado
-
-RISCO_MEDIO = 40
+from backend.graph.risco import nivel
 
 GOLPE_PROVAVEL = {
     "familia": (
@@ -33,6 +32,12 @@ GOLPE_PROVAVEL = {
     ),
 }
 
+# Senha ou código vindos de qualquer um que não seja o banco: em geral é a clonagem do WhatsApp.
+SENHA_OU_CODIGO = (
+    "Isso parece golpe. Nunca passe senha ou código que chegou no seu celular, "
+    "nem para alguém da família. Ligue para a pessoa no número que você já conhece."
+)
+
 SINAIS_DE_GOLPE = (
     "Essa mensagem tem sinais de golpe. Antes de fazer qualquer coisa, "
     "confirme por outro caminho, ligando para um número que você já conhece."
@@ -53,12 +58,19 @@ def garantir_seguranca(fala: str) -> str:
     return SINAIS_DE_GOLPE if AUTORIZA_PAGAMENTO.search(fala) else fala
 
 
+def _golpe_provavel(estado: Estado) -> str:
+    remetente = estado.get("remetente", "outro")
+    if estado.get("pedido") in ("senha", "codigo") and remetente != "banco":
+        return SENHA_OU_CODIGO
+    return GOLPE_PROVAVEL[remetente]
+
+
 def redigir_veredito(estado: Estado) -> str:
-    risco = estado.get("risco", 0)
-    if estado.get("alertar"):
-        fala = GOLPE_PROVAVEL[estado.get("remetente", "outro")] + AVISO_FAMILIA
-    elif risco >= RISCO_MEDIO:
-        fala = SINAIS_DE_GOLPE
-    else:
-        fala = SEM_SINAIS_FORTES
+    match nivel(estado.get("risco", 0)):
+        case "alto":
+            fala = _golpe_provavel(estado) + AVISO_FAMILIA
+        case "medio":
+            fala = SINAIS_DE_GOLPE
+        case _:
+            fala = SEM_SINAIS_FORTES
     return garantir_seguranca(fala)

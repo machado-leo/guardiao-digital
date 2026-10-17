@@ -16,8 +16,8 @@ Prazo final: **29/10**.
 - [x] Ligar o Langfuse ao grafo (`CallbackHandler` no `config`, `sessionId` da Alexa como `session_id`), desligável por `LANGFUSE_ENABLED`
 
 ## 3. Pontuação de risco
-- [ ] Definir uma regra de 0 a 100 que dê para explicar (ex.: número novo +30, PIX +30, urgência +20)
-- [ ] Definir o limiar de alerta (`RISK_ALERT_THRESHOLD`)
+- [x] Definir uma regra de 0 a 100 que dê para explicar: tabela de sinais em `backend/graph/risco.py`
+- [x] Definir o limiar de alerta (`RISK_ALERT_THRESHOLD`): baixo < 40, médio 40 a 69, alto ≥ 70
 
 ## 4. Base de golpes (`data/golpes/` e `backend/rag/`)
 - [ ] Escrever de 20 a 30 casos com descrição, sinais, orientação e fonte (Febraban, BCB, INSS, CERT.br)

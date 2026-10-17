@@ -1,42 +1,80 @@
-"""Pontuação de risco de 0 a 100, com uma regra simples de explicar na banca.
+"""Pontuação de risco de 0 a 100: a soma dos sinais de golpe presentes na conversa.
 
-Primeira versão: os pesos ainda vão ser ajustados no tópico 3 do roadmap.
+Cada sinal tem pontos fixos e um motivo legível, para dar para explicar na banca
+por que uma conversa recebeu aquela nota. Faixas:
+
+    baixo  0 a 39          "não vi sinais fortes", mas manda confirmar mesmo assim
+    medio  40 até o limiar "tem sinais de golpe", confirme por outro caminho
+    alto   limiar a 100    golpe provável e alerta à família (RISK_ALERT_THRESHOLD, padrão 70)
 """
+
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Literal
 
 from backend import config
 from backend.graph.estado import Estado
 
-PESO_PEDIDO = {"senha": 50, "codigo": 50, "pix": 30, "link": 30, "dados": 30, "ligar": 20}
-PEDIDOS_SUSPEITOS = set(PESO_PEDIDO)
+RISCO_MEDIO = 40
+
+Nivel = Literal["baixo", "medio", "alto"]
+
+PEDIDOS_SUSPEITOS = {"senha", "codigo", "pix", "link", "dados", "ligar"}
+INSTITUICOES = {"banco", "inss", "loja"}
+
+
+@dataclass(frozen=True)
+class Sinal:
+    motivo: str
+    pontos: int
+    presente: Callable[[Estado], bool]
+
+
+def _pediu(*pedidos: str) -> Callable[[Estado], bool]:
+    return lambda estado: estado.get("pedido") in pedidos
+
+
+SINAIS = [
+    # Ninguém legítimo pede senha ou código: sozinho, já aciona o alerta.
+    Sinal("pediram senha ou código", 70, _pediu("senha", "codigo")),
+    Sinal("pediram PIX ou pagamento", 30, _pediu("pix")),
+    Sinal("pediram para clicar em link ou instalar aplicativo", 30, _pediu("link")),
+    Sinal("pediram dados pessoais", 30, _pediu("dados")),
+    Sinal("pediram para ligar em outro número", 30, _pediu("ligar")),
+    Sinal("número novo", 30, lambda e: e.get("numero_novo") is True),
+    Sinal("urgência ou ameaça", 20, lambda e: e.get("urgencia") is True),
+    # Banco, INSS e loja não pedem nada disso por mensagem.
+    Sinal(
+        "instituição pedindo isso por mensagem",
+        30,
+        lambda e: e.get("remetente") in INSTITUICOES and e.get("pedido") in PEDIDOS_SUSPEITOS,
+    ),
+    Sinal(
+        "remetente desconhecido pedindo algo",
+        20,
+        lambda e: e.get("remetente") == "outro" and e.get("pedido") in PEDIDOS_SUSPEITOS,
+    ),
+    Sinal(
+        "padrão do golpe do falso parente",
+        20,
+        lambda e: e.get("remetente") == "familia" and e.get("numero_novo") is True and e.get("pedido") == "pix",
+    ),
+]
 
 
 def avaliar_risco(estado: Estado) -> tuple[int, list[str]]:
-    pontos = 0
-    motivos = []
-    pedido = estado.get("pedido")
-    remetente = estado.get("remetente")
+    presentes = [sinal for sinal in SINAIS if sinal.presente(estado)]
+    pontos = sum(sinal.pontos for sinal in presentes)
+    return min(pontos, 100), [sinal.motivo for sinal in presentes]
 
-    if pedido in PESO_PEDIDO:
-        pontos += PESO_PEDIDO[pedido]
-        motivos.append(f"pediram {pedido}")
-    if estado.get("numero_novo"):
-        pontos += 30
-        motivos.append("número novo")
-    if estado.get("urgencia"):
-        pontos += 20
-        motivos.append("urgência ou ameaça")
-    if remetente in ("banco", "inss") and pedido in PEDIDOS_SUSPEITOS:
-        pontos += 20
-        motivos.append(f"{remetente} não pede isso por mensagem")
-    if remetente == "loja" and pedido in ("pix", "link"):
-        pontos += 20
-        motivos.append("cobrança por mensagem, fora do site da loja")
-    if remetente == "familia" and estado.get("numero_novo") and pedido == "pix":
-        pontos += 20
-        motivos.append("padrão do golpe do falso parente")
 
-    return min(pontos, 100), motivos
+def nivel(risco: int) -> Nivel:
+    if risco >= config.limiar_alerta():
+        return "alto"
+    if risco >= RISCO_MEDIO:
+        return "medio"
+    return "baixo"
 
 
 def deve_alertar(risco: int) -> bool:
-    return risco >= config.limiar_alerta()
+    return nivel(risco) == "alto"

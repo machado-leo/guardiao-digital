@@ -41,11 +41,16 @@ orientação é sempre confirmar por outro canal antes de qualquer pagamento.
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 cp .env.example .env   # preencha as chaves
 ```
 
-Teste o grafo por texto antes de ligar na Alexa — é bem mais rápido de iterar.
+Teste o grafo por texto antes de ligar na Alexa — é bem mais rápido de iterar:
+
+```bash
+python -m backend.cli   # conversa com o Guardião no terminal
+python -m pytest        # cenários de golpe, só com as regras (sem GPT nem Langfuse)
+```
 
 ## Cronograma
 

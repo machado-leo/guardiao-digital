@@ -1,0 +1,60 @@
+"""Conversas completas por texto, do jeito que o idoso falaria."""
+
+import uuid
+
+import pytest
+
+from backend.graph import Guardiao
+
+
+def conversar(*respostas: str):
+    guardiao = Guardiao()
+    sessao_id = str(uuid.uuid4())
+    turno = guardiao.iniciar(sessao_id)
+    for resposta in respostas:
+        assert not turno.encerrou, "a conversa terminou antes do esperado"
+        turno = guardiao.responder(sessao_id, resposta)
+    assert turno.encerrou, "a conversa ainda tem perguntas"
+    return turno
+
+
+@pytest.mark.parametrize(
+    ("respostas", "alertar"),
+    [
+        (["Meu filho", "Tá, disse que o celular caiu na água", "Que perdeu o celular",
+          "Pediu 400 reais no PIX", "Disse que era urgente"], True),
+        (["O banco", "Pediram o código que chegou por SMS", "Não"], True),
+        (["Foi o INSS", "Sim, um link pra prova de vida", "Falaram que ia cortar o benefício"], True),
+        (["Uma loja, dos correios", "Pagar uma taxa de frete", "Falaram que ia devolver hoje"], True),
+        (["Minha neta", "Não, é o mesmo número", "Não pediu nada, só mandou foto", "Não"], False),
+    ],
+)
+def test_conversa(respostas, alertar):
+    turno = conversar(*respostas)
+    assert turno.alertar is alertar
+
+
+def test_falso_parente_manda_nao_fazer_o_pix():
+    turno = conversar("Meu neto", "Sim", "Trocou de celular", "Mil reais", "Não")
+    assert "Não faça o PIX" in turno.fala
+    assert "avisar sua família" in turno.fala
+
+
+def test_parente_pedindo_codigo_fala_de_codigo_e_nao_de_pix():
+    turno = conversar("Minha filha", "Não, é o número de sempre", "Pediu o código que chegou", "Não")
+    assert "código" in turno.fala
+    assert "PIX" not in turno.fala
+
+
+def test_desculpa_so_e_perguntada_com_numero_novo():
+    guardiao = Guardiao()
+    guardiao.iniciar("s")
+    guardiao.responder("s", "Meu filho")
+    turno = guardiao.responder("s", "Não, o mesmo número")
+    assert turno.pergunta_id == "pedido_familia"
+
+
+def test_nunca_autoriza_pagamento():
+    turno = conversar("Minha neta", "Não, é o mesmo número", "Nada", "Não")
+    assert "pode pagar" not in turno.fala.lower()
+    assert "não pague" in turno.fala.lower()
