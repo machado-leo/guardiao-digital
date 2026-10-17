@@ -1,15 +1,15 @@
 # 🛡️ Guardião Digital
 
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![LangGraph](https://img.shields.io/badge/LangGraph-State_Machine-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
-![ChromaDB](https://img.shields.io/badge/ChromaDB-RAG_(26_golpes)-FF6F00?style=for-the-badge)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT_%26_Embeddings-412991?style=for-the-badge)
-![FastAPI](https://img.shields.io/badge/FastAPI-Webhook-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Amazon Alexa](https://img.shields.io/badge/Amazon_Alexa-Skills_Kit-00CAFF?style=for-the-badge&logo=amazonalexa&logoColor=white)
-![Telegram](https://img.shields.io/badge/Telegram-Bot_API-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)
-![Langfuse](https://img.shields.io/badge/Langfuse-Observabilidade-000000?style=for-the-badge)
-![Pytest](https://img.shields.io/badge/Pytest-78_testes-0A9EDC?style=for-the-badge&logo=pytest&logoColor=white)
-![LGPD](https://img.shields.io/badge/Privacidade-LGPD-2EA44F?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white)
+![LangGraph](https://img.shields.io/badge/LangGraph-State_Machine-1C3C3C?style=flat&logo=langchain&logoColor=white)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-RAG_(26_golpes)-FF6F00?style=flat)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT_%26_Embeddings-412991?style=flat)
+![FastAPI](https://img.shields.io/badge/FastAPI-Webhook-009688?style=flat&logo=fastapi&logoColor=white)
+![Amazon Alexa](https://img.shields.io/badge/Amazon_Alexa-Skills_Kit-00CAFF?style=flat&logo=amazonalexa&logoColor=white)
+![Telegram](https://img.shields.io/badge/Telegram-Bot_API-26A5E4?style=flat&logo=telegram&logoColor=white)
+![Langfuse](https://img.shields.io/badge/Langfuse-Observabilidade-000000?style=flat)
+![Pytest](https://img.shields.io/badge/Pytest-78_testes-0A9EDC?style=flat&logo=pytest&logoColor=white)
+![LGPD](https://img.shields.io/badge/Privacidade-LGPD-2EA44F?style=flat)
 
 **Um assistente de voz que ajuda pessoas idosas a descobrir, na hora, se uma mensagem
 ou ligação é golpe, e avisa a família quando o risco é alto.**
@@ -159,4 +159,3 @@ Cada conversa vira uma sessão no Langfuse, com um trace por fala:
 
 O que está feito e o que falta: [`docs/roadmap.md`](docs/roadmap.md).
 
-Fora do escopo desta entrega: WhatsApp, Gmail, redes sociais e leitura de prints por OCR.
