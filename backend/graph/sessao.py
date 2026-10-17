@@ -25,7 +25,20 @@ class Turno:
 
 class Guardiao:
     def __init__(self, checkpointer=None):
-        self.grafo = construir_grafo(checkpointer or InMemorySaver())
+        self.checkpointer = checkpointer or InMemorySaver()
+        self.grafo = construir_grafo(self.checkpointer)
+
+    def pergunta_pendente(self, sessao_id: str) -> str | None:
+        """Texto da pergunta que está esperando resposta; None se a conversa não está em andamento."""
+        estado = self.grafo.get_state({"configurable": {"thread_id": sessao_id}})
+        for tarefa in estado.tasks:
+            for pausa in tarefa.interrupts:
+                return pausa.value["texto"]
+        return None
+
+    def encerrar(self, sessao_id: str) -> None:
+        """Apaga a memória da conversa: nada da sessão fica guardado depois que ela acaba."""
+        self.checkpointer.delete_thread(sessao_id)
 
     def iniciar(self, sessao_id: str) -> Turno:
         turno = self._executar(sessao_id, {})

@@ -52,6 +52,14 @@ python -m backend.cli   # conversa com o Guardião no terminal
 python -m pytest        # cenários de golpe, só com as regras (sem GPT nem Langfuse)
 ```
 
+Outros comandos:
+
+```bash
+python -m backend.rag.indexar            # recria o índice depois de editar data/golpes/golpes.json
+python -m backend.alerts.descobrir_chat  # mostra o TELEGRAM_CHAT_ID depois do /start no bot
+uvicorn backend.app:app --port 8000      # endpoint da Alexa em POST /alexa
+```
+
 ## Cronograma
 
 - **Etapa 1 – Observe:** entregue (nota ponderada 9,35).

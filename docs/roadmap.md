@@ -29,12 +29,12 @@ Prazo final: **29/10**.
 - [x] Definir uma mensagem curta e clara para o filho ou neto
 
 ## 6. Backend (`backend/`)
-- [ ] Criar o endpoint FastAPI no formato de requisição da Alexa
-- [ ] Guardar a memória da conversa por `sessionId`
-- [ ] Validar o `ALEXA_SKILL_ID`
-- [ ] Fazer logs sem dados pessoais (LGPD)
-- [ ] Mascarar nomes, valores e telefones antes de enviar os traces ao Langfuse
-- [ ] Não chamar `flush()` do Langfuse dentro da requisição da Alexa
+- [x] Criar o endpoint FastAPI no formato de requisição da Alexa
+- [x] Guardar a memória da conversa por `sessionId`
+- [x] Validar o `ALEXA_SKILL_ID`
+- [x] Fazer logs sem dados pessoais (LGPD)
+- [x] Mascarar valores e telefones antes de enviar os traces ao Langfuse (nomes não dá para detectar por regra: testar com dados fictícios)
+- [x] Não chamar `flush()` do Langfuse dentro da requisição da Alexa
 
 ## 7. Testes por texto
 - [ ] Testar roteiros de falso filho, falso banco, INSS, frete e um caso legítimo

@@ -6,12 +6,16 @@ Desligado quando LANGFUSE_ENABLED não é "true" ou faltam as chaves.
 from functools import lru_cache
 
 from backend import config
+from backend.privacidade import mascarar
 
 
 @lru_cache(maxsize=1)
 def _handler():
+    from langfuse import Langfuse
     from langfuse.langchain import CallbackHandler
 
+    # O cliente criado aqui, com a máscara, é o que o CallbackHandler passa a usar.
+    Langfuse(mask=mascarar)
     return CallbackHandler()
 
 
