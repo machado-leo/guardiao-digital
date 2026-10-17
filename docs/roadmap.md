@@ -3,26 +3,27 @@
 Prazo final: **29/10**.
 
 ## 1. Validações iniciais
-- [ ] Criar uma skill "Guardião" de teste e confirmar que "Alexa, abre o Guardião" funciona na Dot 3
-- [ ] Testar o `AMAZON.SearchQuery` em pt-BR com uma frase de apoio
-- [x] Medir quanto o GPT demora numa chamada curta, para saber o que cabe nos ~8 segundos da Alexa (`gpt-6-luna`: 1,4 a 2,6 s por chamada)
+- [x] Criar a skill e confirmar que ela abre na Echo Dot (nome final: "Guardião Digital"; a Dot de outra conta acessa pelo beta test)
+- [x] Testar o `AMAZON.SearchQuery` em pt-BR com palavras de apoio (`FraseIntent`)
+- [x] Medir quanto o GPT demora numa chamada curta (`gpt-6-luna`: 1,2 a 1,6 s, com picos de ~4 s)
 
 ## 2. Grafo de decisão (`backend/graph/`)
-- [x] Definir o estado da conversa: `remetente`, `canal`, `numero_novo`, `pedido`, `urgencia`, `risco`
-- [x] Criar os nós de pergunta e as ramificações para filho/neto, banco e INSS
+- [x] Definir o estado da conversa
+- [x] Começar com o relato aberto ("me conta o que aconteceu") e só perguntar o que faltou
 - [x] Interpretar as respostas com regras e palavras-chave, chamando o GPT só quando elas não resolverem
-- [x] Gerar o veredito com a regra fixa: nunca dizer "pode pagar"
+- [x] Gerar a fala final pelo GPT, com regras fixas e fala pronta de reserva: nunca dizer "pode pagar"
 - [x] Criar uma CLI para testar a conversa por texto
-- [x] Ligar o Langfuse ao grafo (`CallbackHandler` no `config`, `sessionId` da Alexa como `session_id`), desligável por `LANGFUSE_ENABLED`
+- [x] Ligar o Langfuse ao grafo, com o `sessionId` da Alexa como sessão
 
 ## 3. Pontuação de risco
 - [x] Definir uma regra de 0 a 100 que dê para explicar: tabela de sinais em `backend/graph/risco.py`
 - [x] Definir o limiar de alerta (`RISK_ALERT_THRESHOLD`): baixo < 40, médio 40 a 69, alto ≥ 70
+- [x] Usar a base de golpes como sinal de risco ("parecido com um golpe conhecido")
 
 ## 4. Base de golpes (`data/golpes/` e `backend/rag/`)
-- [x] Escrever de 20 a 30 casos com descrição, sinais, orientação e fonte (Febraban, BCB, INSS, CERT.br)
+- [x] Escrever 26 casos com descrição, sinais, ação e fonte oficial
 - [x] Criar o script que indexa a base no ChromaDB
-- [x] Criar a função de busca e ligá-la ao veredito, para a resposta citar o golpe parecido
+- [x] Criar a busca, filtrando por pedido e remetente antes de comparar os textos
 
 ## 5. Alerta à família (`backend/alerts/`)
 - [x] Criar o bot do Telegram que recebe o alerta quando o risco passa do limiar
@@ -33,27 +34,35 @@ Prazo final: **29/10**.
 - [x] Guardar a memória da conversa por `sessionId`
 - [x] Validar o `ALEXA_SKILL_ID`
 - [x] Fazer logs sem dados pessoais (LGPD)
-- [x] Mascarar valores e telefones antes de enviar os traces ao Langfuse (nomes não dá para detectar por regra: testar com dados fictícios)
+- [x] Mascarar números nos traces do Langfuse (configurável por `LANGFUSE_MASCARAR`)
 - [x] Não chamar `flush()` do Langfuse dentro da requisição da Alexa
 
-## 7. Testes por texto
-- [ ] Testar roteiros de falso filho, falso banco, INSS, frete e um caso legítimo
-- [ ] Medir a latência do começo ao fim, etapa por etapa, pelos traces do Langfuse
+## 7. Testes
+- [x] Testar roteiros de golpe: falso parente, falsa central, INSS, frete, sequestro, clonagem
+- [x] Testar 10 casos legítimos, que não podem gerar alerta
+- [x] Medir a latência por etapa pelos traces do Langfuse
+- [x] Registrar scores por conversa no Langfuse (risco, nível, alerta, golpe parecido, origem da fala)
 
 ## 8. Skill da Alexa (`skill/`)
 - [x] Escrever o modelo de interação: intents, slots, reprompt e `shouldEndSession: false`
 - [x] Ligar a skill ao endpoint pelo túnel (cloudflared, certificado wildcard no console)
-- [ ] Adicionar a fala de espera ("deixa eu verificar")
-- [ ] Testar na Dot 3 com frases reais
+- [x] Testar na Echo Dot com frases reais
+- [x] Ícones e política de privacidade para o beta test
+- [x] ~~Fala de espera ("deixa eu verificar")~~: dispensada, as respostas ficam abaixo de ~3,5 s
+- [ ] URL fixa para o dia da apresentação (domínio grátis do ngrok ou túnel nomeado do Cloudflare)
+- [ ] Testar mais relatos na Dot, olhando os traces: as respostas curtas pelo `RespostaIntent` ainda saem distorcidas às vezes
 
 ## 9. Apresentação
 - [ ] Gravar a Alexa comum respondendo ao mesmo golpe
 - [ ] Preparar o slide de contexto (o golpe e o gargalo da Etapa 1)
-- [ ] (Opcional) Mostrar o caminho que o grafo percorreu e o trecho da base usado, abrindo o trace no Langfuse
+- [ ] (Opcional) Mostrar o caminho do grafo e os scores, abrindo a sessão no Langfuse
 - [ ] Deixar o plano B pronto: simulador do console da Amazon
 - [ ] Ensaiar a demo em menos de 3 minutos
+- [ ] **Antes da demo:** voltar `LANGFUSE_MASCARAR=true` no `.env`, como promete a política de privacidade
+- [ ] **Antes da demo:** subir com `RECARREGAR=0 ./skill/subir.sh`
 
 ## 10. Extras (só se sobrar tempo)
 - [ ] Script de RSS para adicionar golpes novos à base
+- [ ] Reconhecer farmácia, mercado e prefeitura como remetentes conhecidos
 
-**Se apertar, cortar nesta ordem:** extras, a tela "por dentro do grafo" e as ramificações de INSS e banco. O caso do falso filho sozinho já sustenta a demo.
+**Se apertar, cortar nesta ordem:** extras, a tela "por dentro do grafo" e as ramificações de INSS e banco. O caso do falso parente sozinho já sustenta a demo.
