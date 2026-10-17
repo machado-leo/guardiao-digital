@@ -6,3 +6,4 @@ fastapi
 uvicorn
 python-dotenv
 requests
+langfuse
