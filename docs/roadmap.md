@@ -49,7 +49,6 @@ Etapa 2 até **20/10** (2º Ranking em 21/10) · Etapa 3 de **21/10 a 29/10**.
 - [x] Testar na Echo Dot com frases reais
 - [x] Ícones e política de privacidade para o beta test
 - [x] ~~Fala de espera ("deixa eu verificar")~~: dispensada, as respostas ficam abaixo de ~3,5 s
-- [ ] URL fixa para o dia da apresentação (domínio grátis do ngrok ou túnel nomeado do Cloudflare)
 - [ ] Testar mais relatos na Dot, olhando os traces: as respostas curtas pelo `RespostaIntent` ainda saem distorcidas às vezes
 
 ## 9. Apresentação
@@ -65,4 +64,3 @@ Etapa 2 até **20/10** (2º Ranking em 21/10) · Etapa 3 de **21/10 a 29/10**.
 - [ ] Script de RSS para adicionar golpes novos à base
 - [x] Reconhecer farmácia, mercado e prefeitura como remetentes conhecidos
 
-**Se apertar, cortar nesta ordem:** extras, a tela "por dentro do grafo" e as ramificações de INSS e banco. O caso do falso parente sozinho já sustenta a demo.
