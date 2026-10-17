@@ -44,6 +44,8 @@ SINAIS = [
     Sinal("número novo", 30, lambda e: e.get("numero_novo") is True),
     Sinal("urgência ou ameaça", 20, lambda e: e.get("urgencia") is True),
     Sinal("pedido de resgate, padrão do falso sequestro", 30, lambda e: e.get("sequestro") is True),
+    # A base de golpes curada: a conversa é parecida com um golpe documentado por fonte oficial.
+    Sinal("parecido com um golpe conhecido da base", 20, lambda e: e.get("golpe") is not None),
     # Banco, INSS e loja não pedem nada disso por mensagem.
     Sinal(
         "instituição pedindo isso por mensagem",

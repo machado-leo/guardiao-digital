@@ -26,6 +26,9 @@ MODELO_EMBEDDING = "text-embedding-3-small"
 # Distância de cosseno acima da qual o caso é considerado diferente demais.
 # Calibrada com conversas de teste: acertos ficaram até ~0,45 e casos sem relação acima de 0,6.
 DISTANCIA_MAXIMA = 0.55
+# Sem o filtro de remetente, a busca compara com a base inteira: um relato vago ("uma mulher
+# pediu dinheiro") casava com um golpe de banco a 0,41. Os acertos reais ficaram até ~0,29.
+DISTANCIA_MAXIMA_SEM_REMETENTE = 0.35
 CANDIDATOS = 3
 
 PEDIDOS = ["senha", "codigo", "pix", "link", "dados", "ligar"]
@@ -113,16 +116,18 @@ def _combina(golpe: Golpe, estado: Estado) -> bool:
     return golpe.numero_novo is None or golpe.numero_novo == estado.get("numero_novo")
 
 
-def _filtros(estado: Estado) -> list[dict | None]:
-    """Filtros do mais específico ao mais amplo."""
+def _filtros(estado: Estado) -> list[tuple[dict | None, float]]:
+    """Filtros do mais específico ao mais amplo, cada um com a distância máxima aceita."""
     remetente = estado.get("remetente", "outro")
     pedido = estado.get("pedido")
     por_remetente = {"remetente": remetente} if remetente != "outro" else None
     por_pedido = {f"pede_{pedido}": True} if pedido in PEDIDOS else None
 
     if por_remetente and por_pedido:
-        return [{"$and": [por_remetente, por_pedido]}, por_pedido]
-    return [por_remetente or por_pedido]
+        return [({"$and": [por_remetente, por_pedido]}, DISTANCIA_MAXIMA), (por_pedido, DISTANCIA_MAXIMA_SEM_REMETENTE)]
+    if por_remetente:
+        return [(por_remetente, DISTANCIA_MAXIMA)]
+    return [(por_pedido, DISTANCIA_MAXIMA_SEM_REMETENTE)]
 
 
 def buscar(estado: Estado) -> tuple[Golpe, float] | None:
@@ -135,10 +140,10 @@ def buscar(estado: Estado) -> tuple[Golpe, float] | None:
         colecao = _colecao()
 
     texto = descrever(estado)
-    for filtro in _filtros(estado):
+    for filtro, limite in _filtros(estado):
         resultado = colecao.query(query_texts=[texto], n_results=CANDIDATOS, where=filtro)
         for golpe_id, distancia in zip(resultado["ids"][0], resultado["distances"][0]):
             golpe = por_id()[golpe_id]
-            if distancia <= DISTANCIA_MAXIMA and _combina(golpe, estado):
+            if distancia <= limite and _combina(golpe, estado):
                 return golpe, distancia
     return None

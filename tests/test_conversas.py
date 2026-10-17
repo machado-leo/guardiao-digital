@@ -57,7 +57,7 @@ def test_desculpa_so_e_perguntada_com_numero_novo():
 def test_nunca_autoriza_pagamento():
     turno = conversar("Minha neta", "Não, é o mesmo número", "Nada", "Não")
     assert "pode pagar" not in turno.fala.lower()
-    assert "não pague" in turno.fala.lower()
+    assert "confirme antes" in turno.fala.lower()
 
 
 def test_falso_sequestro_avisa_a_familia():
@@ -68,7 +68,7 @@ def test_falso_sequestro_avisa_a_familia():
         "Sim, disseram pra eu não desligar",
     )
     assert turno.alertar is True
-    assert "falso sequestro" in turno.fala
+    assert "Mantenha a calma" in turno.fala
 
 
 def test_sequestro_pula_a_pergunta_do_numero_novo():
@@ -76,3 +76,50 @@ def test_sequestro_pula_a_pergunta_do_numero_novo():
     guardiao.iniciar("s")
     turno = guardiao.responder("s", "Ligaram dizendo que sequestraram meu neto")
     assert turno.pergunta_id == "pedido_familia"
+
+
+def test_relato_completo_vai_direto_ao_veredito():
+    guardiao = Guardiao()
+    guardiao.iniciar("s")
+    turno = guardiao.responder(
+        "s", "Meu neto mandou mensagem de um número novo pedindo 500 reais no pix, disse que era urgente"
+    )
+    assert turno.encerrou
+    assert turno.alertar is True
+
+
+def test_relato_so_pergunta_o_que_faltou():
+    guardiao = Guardiao()
+    guardiao.iniciar("s")
+    turno = guardiao.responder("s", "O banco me mandou uma mensagem pedindo a senha")
+    assert turno.pergunta_id == "urgencia"
+    assert turno.fala.startswith("Entendi.")
+
+
+def test_relato_sem_remetente_pergunta_quem_foi():
+    guardiao = Guardiao()
+    guardiao.iniciar("s")
+    turno = guardiao.responder("s", "volume cinco")
+    assert turno.pergunta_id == "remetente"
+
+
+def test_ligaram_nao_e_pedido_de_ligar():
+    guardiao = Guardiao()
+    guardiao.iniciar("s")
+    turno = guardiao.responder("s", "Ligaram do banco")
+    assert turno.pergunta_id == "pedido_banco"
+
+
+def test_um_transcrito_como_1_nao_vira_pix():
+    guardiao = Guardiao()
+    guardiao.iniciar("s")
+    turno = guardiao.responder("s", "1 carta aqui em casa")
+    assert turno.pergunta_id == "remetente"
+
+
+def test_valor_com_reais_no_relato_vira_pix():
+    from backend.graph.interpretar import interpretar
+
+    campos = interpretar("relato", "meu neto pediu 300 reais")
+    assert campos["pedido"] == "pix"
+    assert campos["valor"] == 300

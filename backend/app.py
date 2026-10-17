@@ -81,10 +81,12 @@ def receber(corpo: dict = Body(...)) -> dict:
     tipo = requisicao["type"]
     intent = requisicao.get("intent", {})
     resultado = "?"
+    # Vai para o trace do Langfuse: ajuda a ver qual intent capturou cada fala.
+    contexto = {"origem": "alexa", "alexa_tipo": tipo, "alexa_intent": intent.get("name")}
 
     try:
         if tipo == "LaunchRequest":
-            turno = guardiao.iniciar(sessao_id)
+            turno = guardiao.iniciar(sessao_id, contexto)
             resultado = turno.pergunta_id
             return _resposta_do_turno(sessao_id, turno)
 
@@ -105,7 +107,7 @@ def receber(corpo: dict = Body(...)) -> dict:
         pendente = guardiao.pergunta_pendente(sessao_id)
         if pendente is None:
             # Chamada direta ("Alexa, pede pro Guardião...") ou sessão perdida: começa do zero.
-            turno = guardiao.iniciar(sessao_id)
+            turno = guardiao.iniciar(sessao_id, contexto)
             pendente = PERGUNTAS[turno.pergunta_id].texto
             if alexa.texto_falado(intent) is None:
                 resultado = turno.pergunta_id
@@ -123,7 +125,7 @@ def receber(corpo: dict = Body(...)) -> dict:
             resultado = "nao_entendeu"
             return _pergunta(pendente, alexa.FALA_NAO_ENTENDI)
 
-        turno = guardiao.responder(sessao_id, texto)
+        turno = guardiao.responder(sessao_id, texto, contexto)
         resultado = "veredito" if turno.encerrou else turno.pergunta_id
         return _resposta_do_turno(sessao_id, turno)
     finally:

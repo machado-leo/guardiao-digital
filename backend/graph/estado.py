@@ -26,4 +26,5 @@ class Estado(TypedDict, total=False):
     alertar: bool
     golpe: dict | None  # caso mais parecido da base: id, nome, acao, fonte, url, distancia
     veredito: str
+    origem_da_fala: str  # "gpt" ou por que a fala pronta foi usada
     alerta_enviado: bool  # alerta disparado no Telegram (o envio termina em segundo plano)

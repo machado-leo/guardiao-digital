@@ -1,8 +1,11 @@
 """Grafo de decisão em LangGraph.
 
     planejar ─┬─> perguntar ──> planejar      (enquanto houver pergunta)
-              └─> avaliar ──> consultar_base ──> concluir ─┬─> avisar_familia ──> fim   (risco alto)
+              └─> consultar_base ──> avaliar ──> concluir ─┬─> avisar_familia ──> fim   (risco alto)
                                                            └─> fim
+
+A base de golpes entra antes do risco: parecer com um golpe conhecido é um dos
+sinais que decidem se a situação é crítica.
 
 Cada pergunta pausa o grafo com interrupt(); a próxima fala do idoso retoma a
 execução de onde parou. O estado de cada conversa fica no checkpointer, pela
@@ -16,9 +19,9 @@ from langgraph.types import interrupt
 from backend.alerts.telegram import enviar_alerta, montar_mensagem
 from backend.graph.estado import Estado
 from backend.graph.interpretar import interpretar
-from backend.graph.perguntas import PERGUNTAS, proxima_pergunta
-from backend.graph.risco import avaliar_risco, deve_alertar, nivel
-from backend.graph.veredito import redigir_veredito
+from backend.graph.perguntas import proxima_pergunta, texto_da_pergunta
+from backend.graph.risco import PEDIDOS_SUSPEITOS, avaliar_risco, deve_alertar
+from backend.graph.fala import escrever
 from backend.rag.busca import buscar
 
 
@@ -28,7 +31,7 @@ def planejar(estado: Estado) -> dict:
 
 def perguntar(estado: Estado) -> dict:
     pergunta_id = estado["proxima"]
-    resposta = interrupt({"pergunta_id": pergunta_id, "texto": PERGUNTAS[pergunta_id].texto})
+    resposta = interrupt({"pergunta_id": pergunta_id, "texto": texto_da_pergunta(estado, pergunta_id)})
     return {
         **interpretar(pergunta_id, resposta),
         "respondidas": [*estado.get("respondidas", []), pergunta_id],
@@ -42,8 +45,9 @@ def avaliar(estado: Estado) -> dict:
 
 
 def consultar_base(estado: Estado) -> dict:
-    # Sem risco não há golpe para citar; pula a busca e economiza tempo da Alexa.
-    if nivel(estado["risco"]) == "baixo":
+    # Sem pedido de dinheiro, dados, código ou link, não há golpe para comparar: pula a busca,
+    # que somaria risco a uma conversa normal ("minha filha pediu pão"), e poupa tempo da Alexa.
+    if estado.get("pedido") not in PEDIDOS_SUSPEITOS and not estado.get("sequestro"):
         return {"golpe": None}
     achado = buscar(estado)
     if achado is None:
@@ -62,7 +66,8 @@ def consultar_base(estado: Estado) -> dict:
 
 
 def concluir(estado: Estado) -> dict:
-    return {"veredito": redigir_veredito(estado)}
+    fala, origem = escrever(estado)
+    return {"veredito": fala, "origem_da_fala": origem}
 
 
 def avisar_familia(estado: Estado) -> dict:
@@ -71,7 +76,7 @@ def avisar_familia(estado: Estado) -> dict:
 
 
 def _depois_de_planejar(estado: Estado) -> str:
-    return "perguntar" if estado.get("proxima") else "avaliar"
+    return "perguntar" if estado.get("proxima") else "consultar_base"
 
 
 def construir_grafo(checkpointer: BaseCheckpointSaver):
@@ -84,10 +89,10 @@ def construir_grafo(checkpointer: BaseCheckpointSaver):
     grafo.add_node("avisar_familia", avisar_familia)
 
     grafo.add_edge(START, "planejar")
-    grafo.add_conditional_edges("planejar", _depois_de_planejar, ["perguntar", "avaliar"])
+    grafo.add_conditional_edges("planejar", _depois_de_planejar, ["perguntar", "consultar_base"])
     grafo.add_edge("perguntar", "planejar")
-    grafo.add_edge("avaliar", "consultar_base")
-    grafo.add_edge("consultar_base", "concluir")
+    grafo.add_edge("consultar_base", "avaliar")
+    grafo.add_edge("avaliar", "concluir")
     grafo.add_conditional_edges(
         "concluir", lambda estado: "avisar_familia" if estado["alertar"] else END, ["avisar_familia", END]
     )

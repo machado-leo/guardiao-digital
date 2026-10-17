@@ -40,16 +40,18 @@ def test_todo_remetente_tem_casos():
 GOLPE = {"id": "x", "nome": "golpe do teste", "acao": "Não faça o PIX.", "fonte": "f", "url": "u", "distancia": 0.3}
 
 
-def test_veredito_alto_cita_o_golpe_e_avisa_a_familia():
+def test_veredito_alto_fala_da_gravidade_e_da_acao_do_caso():
     fala = redigir_veredito({"risco": 90, "golpe": GOLPE})
-    assert fala.startswith("Isso parece o golpe do teste. Não faça o PIX.")
+    assert fala.startswith("Atenção: isso tem muita cara de golpe. Não faça o PIX.")
     assert "avisar sua família" in fala
+    assert "golpe do teste" not in fala
 
 
-def test_veredito_medio_cita_o_golpe_sem_alerta():
+def test_veredito_medio_usa_a_acao_do_caso_sem_alerta():
     fala = redigir_veredito({"risco": 50, "golpe": GOLPE})
-    assert fala == "Essa mensagem tem sinais do golpe do teste. Não faça o PIX."
+    assert fala == "Cuidado: isso tem sinais de golpe. Não faça o PIX."
 
 
-def test_risco_baixo_nao_consulta_a_base():
-    assert consultar_base({"risco": 10}) == {"golpe": None}
+def test_sem_pedido_suspeito_nao_consulta_a_base():
+    assert consultar_base({"pedido": "nada"}) == {"golpe": None}
+    assert consultar_base({"pedido": "outro"}) == {"golpe": None}

@@ -54,3 +54,12 @@ def test_motivos_explicam_a_nota():
 def test_limiar_vem_do_env(monkeypatch):
     monkeypatch.setenv("RISK_ALERT_THRESHOLD", "90")
     assert nivel(80) == "medio"
+
+
+def test_parecer_com_golpe_conhecido_pode_tornar_critico():
+    estado = {"remetente": "inss", "pedido": "link", "urgencia": False}
+    sem_base, _ = avaliar_risco(estado)
+    com_base, motivos = avaliar_risco({**estado, "golpe": {"id": "inss-prova-de-vida-link"}})
+    assert nivel(sem_base) == "medio"
+    assert nivel(com_base) == "alto"
+    assert "parecido com um golpe conhecido da base" in motivos

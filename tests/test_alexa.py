@@ -52,7 +52,7 @@ def texto(resposta: dict) -> str:
 def test_conversa_completa_pela_alexa(cliente):
     sessao = str(uuid.uuid4())
     abertura = cliente.post("/alexa", json=requisicao(sessao, "LaunchRequest")).json()
-    assert "Quem te mandou a mensagem" in texto(abertura)
+    assert "Me conta o que aconteceu" in texto(abertura)
     assert abertura["response"]["shouldEndSession"] is False
     assert "reprompt" in abertura["response"]
 
@@ -79,7 +79,7 @@ def test_nao_entendeu_repete_a_pergunta(cliente):
     sessao = str(uuid.uuid4())
     cliente.post("/alexa", json=requisicao(sessao, "LaunchRequest"))
     resposta = cliente.post("/alexa", json=requisicao(sessao, "IntentRequest", "AMAZON.FallbackIntent")).json()
-    assert texto(resposta).startswith("Desculpe, não entendi. Quem te mandou a mensagem")
+    assert texto(resposta).startswith("Desculpe, não entendi. Me conta o que aconteceu")
     assert resposta["response"]["shouldEndSession"] is False
 
 
@@ -87,9 +87,9 @@ def test_ajuda_e_repetir(cliente):
     sessao = str(uuid.uuid4())
     cliente.post("/alexa", json=requisicao(sessao, "LaunchRequest"))
     ajuda = cliente.post("/alexa", json=requisicao(sessao, "IntentRequest", "AMAZON.HelpIntent")).json()
-    assert "Quem te mandou a mensagem" in texto(ajuda)
+    assert "Me conta o que aconteceu" in texto(ajuda)
     repetir = cliente.post("/alexa", json=requisicao(sessao, "IntentRequest", "AMAZON.RepeatIntent")).json()
-    assert texto(repetir).startswith("Quem te mandou a mensagem")
+    assert texto(repetir).startswith("Me conta o que aconteceu")
 
 
 def test_parar_encerra_sem_autorizar_pagamento(cliente):

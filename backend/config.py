@@ -27,3 +27,8 @@ def telegram_configurado() -> bool:
 def langfuse_ativo() -> bool:
     ligado = os.getenv("LANGFUSE_ENABLED", "false").lower() == "true"
     return ligado and bool(os.getenv("LANGFUSE_PUBLIC_KEY")) and bool(os.getenv("LANGFUSE_SECRET_KEY"))
+
+
+def langfuse_mascarar() -> bool:
+    """Máscara de números nos traces. Só desligue em testes sem dados reais."""
+    return os.getenv("LANGFUSE_MASCARAR", "true").lower() != "false"

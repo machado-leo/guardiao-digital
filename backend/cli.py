@@ -13,13 +13,13 @@ def main() -> None:
     guardiao = Guardiao()
     sessao_id = f"cli-{uuid.uuid4()}"
 
-    turno = guardiao.iniciar(sessao_id)
+    turno = guardiao.iniciar(sessao_id, {"origem": "cli"})
     try:
         while True:
             print(f"Guardião: {turno.fala}")
             if turno.encerrou:
                 break
-            turno = guardiao.responder(sessao_id, input("Você: "))
+            turno = guardiao.responder(sessao_id, input("Você: "), {"origem": "cli"})
     except (EOFError, KeyboardInterrupt):
         print()
         return
