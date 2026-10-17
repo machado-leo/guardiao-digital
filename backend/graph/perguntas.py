@@ -14,7 +14,7 @@ class Pergunta:
 PERGUNTAS = {
     p.id: p
     for p in [
-        Pergunta("remetente", "Quem te mandou a mensagem? Foi alguém da família, o banco, o INSS ou uma loja?"),
+        Pergunta("remetente", "Quem te mandou a mensagem, ou quem ligou? Foi alguém da família, o banco, o INSS ou uma loja?"),
         Pergunta("numero_novo", "A pessoa está usando um número novo?"),
         Pergunta("desculpa", "E qual foi a desculpa para o número novo?"),
         Pergunta("pedido_familia", "E o que ela pediu? Foi dinheiro no PIX? Quanto?"),

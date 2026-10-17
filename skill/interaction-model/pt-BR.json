@@ -1,0 +1,110 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "guardião digital",
+      "intents": [
+        {
+          "name": "RespostaIntent",
+          "slots": [{ "name": "resposta", "type": "RESPOSTA" }],
+          "samples": ["{resposta}"]
+        },
+        {
+          "name": "FraseIntent",
+          "slots": [{ "name": "frase", "type": "AMAZON.SearchQuery" }],
+          "samples": [
+            "foi {frase}",
+            "é {frase}",
+            "era {frase}",
+            "ele {frase}",
+            "ela {frase}",
+            "pediu {frase}",
+            "pediram {frase}",
+            "disse {frase}",
+            "disseram {frase}",
+            "falou {frase}",
+            "falaram {frase}",
+            "mandou {frase}",
+            "mandaram {frase}",
+            "ligaram {frase}",
+            "a mensagem diz {frase}",
+            "a mensagem fala {frase}",
+            "recebi {frase}",
+            "quem mandou foi {frase}",
+            "quem ligou foi {frase}"
+          ]
+        },
+        { "name": "AMAZON.YesIntent", "samples": [] },
+        { "name": "AMAZON.NoIntent", "samples": [] },
+        { "name": "AMAZON.HelpIntent", "samples": [] },
+        { "name": "AMAZON.RepeatIntent", "samples": [] },
+        { "name": "AMAZON.StopIntent", "samples": [] },
+        { "name": "AMAZON.CancelIntent", "samples": [] },
+        { "name": "AMAZON.NavigateHomeIntent", "samples": [] },
+        { "name": "AMAZON.FallbackIntent", "samples": [] }
+      ],
+      "types": [
+        {
+          "name": "RESPOSTA",
+          "values": [
+            { "name": { "value": "meu filho" } },
+            { "name": { "value": "minha filha" } },
+            { "name": { "value": "meu neto" } },
+            { "name": { "value": "minha neta" } },
+            { "name": { "value": "meu sobrinho" } },
+            { "name": { "value": "minha irmã" } },
+            { "name": { "value": "meu irmão" } },
+            { "name": { "value": "alguém da família" } },
+            { "name": { "value": "o banco" } },
+            { "name": { "value": "a caixa" } },
+            { "name": { "value": "o gerente do banco" } },
+            { "name": { "value": "a central do cartão" } },
+            { "name": { "value": "o inss" } },
+            { "name": { "value": "a aposentadoria" } },
+            { "name": { "value": "uma loja" } },
+            { "name": { "value": "os correios" } },
+            { "name": { "value": "a receita federal" } },
+            { "name": { "value": "um número desconhecido" } },
+            { "name": { "value": "uma empresa" } },
+            { "name": { "value": "um advogado" } },
+            { "name": { "value": "não sei quem foi" } },
+            { "name": { "value": "número novo" } },
+            { "name": { "value": "trocou de número" } },
+            { "name": { "value": "o mesmo número" } },
+            { "name": { "value": "o número de sempre" } },
+            { "name": { "value": "o celular caiu na água" } },
+            { "name": { "value": "perdeu o celular" } },
+            { "name": { "value": "roubaram o celular" } },
+            { "name": { "value": "dinheiro no pix" } },
+            { "name": { "value": "um pix" } },
+            { "name": { "value": "quatrocentos reais" } },
+            { "name": { "value": "mil reais" } },
+            { "name": { "value": "dinheiro emprestado" } },
+            { "name": { "value": "pagar um boleto" } },
+            { "name": { "value": "pagar uma taxa" } },
+            { "name": { "value": "a senha" } },
+            { "name": { "value": "minha senha" } },
+            { "name": { "value": "o código que chegou" } },
+            { "name": { "value": "o código do sms" } },
+            { "name": { "value": "clicar num link" } },
+            { "name": { "value": "um link" } },
+            { "name": { "value": "instalar um aplicativo" } },
+            { "name": { "value": "ligar para um número" } },
+            { "name": { "value": "ligar num zero oitocentos" } },
+            { "name": { "value": "meus dados" } },
+            { "name": { "value": "meu cpf" } },
+            { "name": { "value": "uma foto do documento" } },
+            { "name": { "value": "não pediu nada" } },
+            { "name": { "value": "era urgente" } },
+            { "name": { "value": "falou que era urgente" } },
+            { "name": { "value": "ameaçaram cortar o benefício" } },
+            { "name": { "value": "vão bloquear a conta" } },
+            { "name": { "value": "sequestraram meu neto" } },
+            { "name": { "value": "uma voz chorando" } },
+            { "name": { "value": "pediram resgate" } },
+            { "name": { "value": "não sei" } }
+          ]
+        }
+      ]
+    }
+  }
+}

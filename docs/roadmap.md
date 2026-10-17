@@ -41,8 +41,8 @@ Prazo final: **29/10**.
 - [ ] Medir a latência do começo ao fim, etapa por etapa, pelos traces do Langfuse
 
 ## 8. Skill da Alexa (`skill/`)
-- [ ] Escrever o modelo de interação: intents, slots, reprompt e `shouldEndSession: false`
-- [ ] Ligar a skill ao endpoint pelo túnel (ngrok ou cloudflared), ou pela Lambda se o túnel der problema
+- [x] Escrever o modelo de interação: intents, slots, reprompt e `shouldEndSession: false`
+- [x] Ligar a skill ao endpoint pelo túnel (cloudflared, certificado wildcard no console)
 - [ ] Adicionar a fala de espera ("deixa eu verificar")
 - [ ] Testar na Dot 3 com frases reais
 
