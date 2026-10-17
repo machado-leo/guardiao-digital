@@ -48,6 +48,8 @@ SIM = [r"sim", r"ta", r"esta", r"estava", r"isso", r"uhum", r"aham", r"claro", r
        r"falou", r"disse", r"positivo", r"exato", r"com certeza"]
 NAO = [r"nao", r"nunca", r"nada", r"negativo", r"nem"]
 DUVIDA = [r"nao sei", r"sei la", r"nao lembro", r"talvez"]
+# Na urgência, "falou que precisa para..." não é um sim: verbos de fala só valem para pedidos.
+SIM_EXPLICITO = [r"sim", r"isso", r"uhum", r"aham", r"claro", r"positivo", r"exato", r"com certeza", r"foi sim"]
 
 NUMERO_NOVO = [r"novo", r"trocou", r"outro numero", r"caiu", r"quebr\w*", r"perd\w*", r"roubad[oa]",
                r"nao tinha", r"nao conhec\w*"]
@@ -74,12 +76,12 @@ def _primeiro(texto: str, categorias: list[tuple[str, list[str]]]) -> str | None
     return next((nome for nome, padroes in categorias if _tem(texto, padroes)), None)
 
 
-def _sim_ou_nao(texto: str) -> bool | None:
+def _sim_ou_nao(texto: str, sim: list[str] = SIM) -> bool | None:
     if _tem(texto, DUVIDA):
         return None
     if _tem(texto, NAO):
         return False
-    if _tem(texto, SIM):
+    if _tem(texto, sim):
         return True
     return None
 
@@ -134,10 +136,10 @@ def _classificar_com_llm(pergunta_id: str, resposta: str, opcoes: list[str]) -> 
     return saida if saida in opcoes else None
 
 
-def _sim_ou_nao_com_llm(pergunta_id: str, resposta: str, texto: str) -> bool | None:
+def _sim_ou_nao_com_llm(pergunta_id: str, resposta: str, texto: str, sim: list[str] = SIM) -> bool | None:
     if _tem(texto, DUVIDA):
         return None
-    regra = _sim_ou_nao(texto)
+    regra = _sim_ou_nao(texto, sim)
     if regra is not None:
         return regra
     return {"sim": True, "nao": False}.get(_classificar_com_llm(pergunta_id, resposta, ["sim", "nao", "nao_sei"]))
@@ -254,6 +256,6 @@ def _interpretar_pergunta(pergunta_id: str, resposta: str, texto: str) -> dict:
     if pergunta_id == "urgencia":
         if _tem(texto, URGENCIA):
             return {"urgencia": True}
-        return {"urgencia": _sim_ou_nao_com_llm(pergunta_id, resposta, texto)}
+        return {"urgencia": _sim_ou_nao_com_llm(pergunta_id, resposta, texto, SIM_EXPLICITO)}
 
     raise ValueError(f"Pergunta desconhecida: {pergunta_id}")

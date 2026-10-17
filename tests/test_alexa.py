@@ -52,7 +52,7 @@ def texto(resposta: dict) -> str:
 def test_conversa_completa_pela_alexa(cliente):
     sessao = str(uuid.uuid4())
     abertura = cliente.post("/alexa", json=requisicao(sessao, "LaunchRequest")).json()
-    assert "Me conta o que aconteceu" in texto(abertura)
+    assert "aconte" in texto(abertura).lower()
     assert abertura["response"]["shouldEndSession"] is False
     assert "reprompt" in abertura["response"]
 

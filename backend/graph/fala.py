@@ -65,6 +65,8 @@ def _prompt(estado: Estado, referencia: str) -> str:
         "- Mantenha a ação da orientação de referência, com suas palavras e sem mudar o sentido.\n"
         "- Pode se referir ao que a pessoa contou, sem inventar nada que ela não disse.\n"
         "- Nunca diga que ela pode pagar, transferir ou passar dados, nem que é seguro.\n"
+        "- Se a pessoa contar que está sendo ameaçada pessoalmente ou em perigo agora, a segurança "
+        "vem primeiro: diga para ir a um lugar seguro e ligar 190.\n"
         "- Não diga o nome de nenhum golpe. Sem emojis, listas ou aspas.\n"
         "Responda só com a fala."
     )

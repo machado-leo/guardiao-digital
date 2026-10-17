@@ -1,5 +1,6 @@
 """Interface de conversa usada pela CLI e, depois, pelo endpoint da Alexa."""
 
+import random
 from dataclasses import dataclass, field
 
 from langgraph.checkpoint.memory import InMemorySaver
@@ -7,8 +8,8 @@ from langgraph.types import Command
 
 from backend import observabilidade
 from backend.graph.grafo import construir_grafo
+from backend.graph.perguntas import ABERTURAS
 
-SAUDACAO = "Oi, eu sou o Guardião. "
 
 
 @dataclass
@@ -42,7 +43,7 @@ class Guardiao:
 
     def iniciar(self, sessao_id: str, contexto: dict | None = None) -> Turno:
         turno = self._executar(sessao_id, {}, contexto)
-        turno.fala = SAUDACAO + turno.fala
+        turno.fala = random.choice(ABERTURAS)
         return turno
 
     def responder(self, sessao_id: str, resposta: str, contexto: dict | None = None) -> Turno:

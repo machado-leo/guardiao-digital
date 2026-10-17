@@ -123,3 +123,19 @@ def test_valor_com_reais_no_relato_vira_pix():
     campos = interpretar("relato", "meu neto pediu 300 reais")
     assert campos["pedido"] == "pix"
     assert campos["valor"] == 300
+
+
+def test_abertura_varia_mas_sempre_convida_a_contar():
+    from backend.graph.perguntas import ABERTURAS
+
+    falas = {Guardiao().iniciar(str(uuid.uuid4())).fala for _ in range(30)}
+    assert len(falas) > 1
+    assert falas <= set(ABERTURAS)
+
+
+def test_explicar_o_motivo_nao_conta_como_urgencia():
+    from backend.graph.interpretar import interpretar
+
+    assert interpretar("urgencia", "falou que precisa para conectar no banco") == {"urgencia": None}
+    assert interpretar("urgencia", "sim") == {"urgencia": True}
+    assert interpretar("urgencia", "disse que era para hoje") == {"urgencia": True}

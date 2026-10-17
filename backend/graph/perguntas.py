@@ -20,7 +20,7 @@ class Pergunta:
 PERGUNTAS = {
     p.id: p
     for p in [
-        Pergunta("relato", "Me conta o que aconteceu: quem falou com você e o que pediu?", "relato"),
+        Pergunta("relato", "Me conta o que aconteceu.", "relato"),
         Pergunta(
             "remetente",
             "E quem foi que te procurou? Alguém da família, o banco, o INSS ou uma loja?",
@@ -47,6 +47,14 @@ ROTEIROS: dict[str, list[str]] = {
 
 # Uma palavra curta antes da próxima pergunta, variando para não soar como formulário.
 CONFIRMACOES = ["Entendi.", "Certo.", "Tá bom."]
+
+# A abertura varia de uma conversa para outra; todas só convidam a pessoa a contar.
+ABERTURAS = [
+    "Oi, eu sou o Guardião. Me conta o que aconteceu.",
+    "Oi, aqui é o Guardião. O que aconteceu? Pode me contar com calma.",
+    "Oi, eu sou o Guardião. Em que posso te ajudar? Me conta o que aconteceu.",
+    "Oi, aqui é o Guardião. Pode me contar o que está acontecendo.",
+]
 
 
 def _ja_sabe(estado: Estado, pergunta_id: str) -> bool:
