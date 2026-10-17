@@ -1,7 +1,8 @@
 """Fala final: uma ou duas frases, tom calmo, uma ação clara.
 
-Regra fixa: o Guardião nunca diz "pode pagar". As falas são modelos fixos para
-garantir isso; a redação com GPT e a citação da base de golpes entram com o RAG.
+Regra fixa: o Guardião nunca diz "pode pagar". Por isso a fala não é gerada pelo
+GPT: quando a busca acha um golpe parecido na base, usa o nome e a ação escritos
+à mão naquele caso; quando não acha, usa os modelos fixos abaixo.
 """
 
 import re
@@ -38,6 +39,11 @@ SENHA_OU_CODIGO = (
     "nem para alguém da família. Ligue para a pessoa no número que você já conhece."
 )
 
+FALSO_SEQUESTRO = (
+    "Isso parece o golpe do falso sequestro. Mantenha a calma e não fale o nome de ninguém. "
+    "Desligue e ligue para o seu parente de outro telefone."
+)
+
 SINAIS_DE_GOLPE = (
     "Essa mensagem tem sinais de golpe. Antes de fazer qualquer coisa, "
     "confirme por outro caminho, ligando para um número que você já conhece."
@@ -60,15 +66,22 @@ def garantir_seguranca(fala: str) -> str:
 
 def _golpe_provavel(estado: Estado) -> str:
     remetente = estado.get("remetente", "outro")
+    if estado.get("sequestro"):
+        return FALSO_SEQUESTRO
     if estado.get("pedido") in ("senha", "codigo") and remetente != "banco":
         return SENHA_OU_CODIGO
     return GOLPE_PROVAVEL[remetente]
 
 
 def redigir_veredito(estado: Estado) -> str:
+    golpe = estado.get("golpe")
     match nivel(estado.get("risco", 0)):
+        case "alto" if golpe:
+            fala = f"Isso parece o {golpe['nome']}. {golpe['acao']}" + AVISO_FAMILIA
         case "alto":
             fala = _golpe_provavel(estado) + AVISO_FAMILIA
+        case "medio" if golpe:
+            fala = f"Essa mensagem tem sinais do {golpe['nome']}. {golpe['acao']}"
         case "medio":
             fala = SINAIS_DE_GOLPE
         case _:

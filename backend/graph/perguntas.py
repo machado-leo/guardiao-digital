@@ -46,5 +46,8 @@ def proxima_pergunta(estado: Estado) -> str | None:
         # Só faz sentido perguntar a desculpa se o número é novo.
         if pergunta_id == "desculpa" and estado.get("numero_novo") is not True:
             continue
+        # O falso sequestro chega por ligação: número novo e desculpa não ajudam.
+        if pergunta_id in ("numero_novo", "desculpa") and estado.get("sequestro"):
+            continue
         return pergunta_id
     return None

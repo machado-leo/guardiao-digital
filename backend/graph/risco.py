@@ -43,6 +43,7 @@ SINAIS = [
     Sinal("pediram para ligar em outro número", 30, _pediu("ligar")),
     Sinal("número novo", 30, lambda e: e.get("numero_novo") is True),
     Sinal("urgência ou ameaça", 20, lambda e: e.get("urgencia") is True),
+    Sinal("pedido de resgate, padrão do falso sequestro", 30, lambda e: e.get("sequestro") is True),
     # Banco, INSS e loja não pedem nada disso por mensagem.
     Sinal(
         "instituição pedindo isso por mensagem",
@@ -53,6 +54,13 @@ SINAIS = [
         "remetente desconhecido pedindo algo",
         20,
         lambda e: e.get("remetente") == "outro" and e.get("pedido") in PEDIDOS_SUSPEITOS,
+    ),
+    # Febraban: "sempre desconfie" de pedido de dinheiro de parente por mensagem,
+    # mesmo do número de sempre (o WhatsApp pode ter sido clonado).
+    Sinal(
+        "parente pedindo dinheiro por mensagem",
+        10,
+        lambda e: e.get("remetente") == "familia" and e.get("pedido") == "pix",
     ),
     Sinal(
         "padrão do golpe do falso parente",

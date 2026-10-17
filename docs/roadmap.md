@@ -20,9 +20,9 @@ Prazo final: **29/10**.
 - [x] Definir o limiar de alerta (`RISK_ALERT_THRESHOLD`): baixo < 40, médio 40 a 69, alto ≥ 70
 
 ## 4. Base de golpes (`data/golpes/` e `backend/rag/`)
-- [ ] Escrever de 20 a 30 casos com descrição, sinais, orientação e fonte (Febraban, BCB, INSS, CERT.br)
-- [ ] Criar o script que indexa a base no ChromaDB
-- [ ] Criar a função de busca e ligá-la ao veredito, para a resposta citar o golpe parecido
+- [x] Escrever de 20 a 30 casos com descrição, sinais, orientação e fonte (Febraban, BCB, INSS, CERT.br)
+- [x] Criar o script que indexa a base no ChromaDB
+- [x] Criar a função de busca e ligá-la ao veredito, para a resposta citar o golpe parecido
 
 ## 5. Alerta à família (`backend/alerts/`)
 - [ ] Criar o bot do Telegram que recebe o alerta quando o risco passa do limiar

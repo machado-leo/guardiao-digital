@@ -21,11 +21,12 @@ from backend.graph.risco import avaliar_risco, nivel
         # Falso frete
         ({"remetente": "loja", "pedido": "pix", "urgencia": True}, "alto"),
         ({"remetente": "loja", "pedido": "pix", "urgencia": False}, "medio"),
+        # WhatsApp clonado: parente pede dinheiro do número de sempre
+        ({"remetente": "familia", "numero_novo": False, "pedido": "pix", "urgencia": False}, "medio"),
         # Desconhecido
         ({"remetente": "outro", "pedido": "link", "urgencia": False}, "medio"),
         # Sem sinais fortes
         ({"remetente": "familia", "numero_novo": False, "pedido": "nada", "urgencia": False}, "baixo"),
-        ({"remetente": "familia", "numero_novo": False, "pedido": "pix", "urgencia": False}, "baixo"),
         ({"remetente": "inss", "pedido": "nada", "urgencia": None}, "baixo"),
     ],
 )
@@ -41,8 +42,13 @@ def test_risco_nunca_passa_de_100():
 
 def test_motivos_explicam_a_nota():
     risco, motivos = avaliar_risco({"remetente": "familia", "numero_novo": True, "pedido": "pix"})
-    assert risco == 80
-    assert motivos == ["pediram PIX ou pagamento", "número novo", "padrão do golpe do falso parente"]
+    assert risco == 90
+    assert motivos == [
+        "pediram PIX ou pagamento",
+        "número novo",
+        "parente pedindo dinheiro por mensagem",
+        "padrão do golpe do falso parente",
+    ]
 
 
 def test_limiar_vem_do_env(monkeypatch):

@@ -46,7 +46,11 @@ NUMERO_NOVO = [r"novo", r"trocou", r"outro numero", r"caiu", r"quebr\w*", r"perd
 NUMERO_ANTIGO = [r"mesmo", r"de sempre", r"conhecido"]
 
 URGENCIA = [r"urgen\w*", r"agora", r"hoje", r"rapido", r"prazo", r"bloque\w*", r"cancel\w*", r"cort\w*",
-            r"pres[oa]", r"multa", r"amea\w*", r"senao"]
+            r"pres[oa]", r"multa", r"amea\w*", r"senao", r"nao deslig\w*", r"resgate", r"machuc\w*",
+            r"sequestr\w*"]
+
+# Detectado em qualquer resposta: muda o roteiro e pesa no risco.
+SEQUESTRO = [r"sequestr\w*", r"resgate", r"refem", r"voz chorando"]
 
 
 def normalizar(texto: str) -> str:
@@ -132,8 +136,13 @@ def _pedido(pergunta_id: str, resposta: str, texto: str) -> dict:
 
 def interpretar(pergunta_id: str, resposta: str) -> dict:
     """Devolve os campos do estado preenchidos pela resposta a uma pergunta."""
-    texto = normalizar(resposta)
+    campos = _interpretar_pergunta(pergunta_id, resposta, normalizar(resposta))
+    if _tem(normalizar(resposta), SEQUESTRO):
+        campos["sequestro"] = True
+    return campos
 
+
+def _interpretar_pergunta(pergunta_id: str, resposta: str, texto: str) -> dict:
     if pergunta_id == "remetente":
         opcoes = [nome for nome, _ in REMETENTES]
         remetente = _primeiro(texto, REMETENTES) or _classificar_com_llm(pergunta_id, resposta, opcoes)

@@ -19,6 +19,7 @@ class Turno:
     risco: int | None = None
     alertar: bool = False
     motivos: list[str] = field(default_factory=list)
+    golpe: dict | None = None
 
 
 class Guardiao:
@@ -46,4 +47,5 @@ class Guardiao:
             risco=resultado["risco"],
             alertar=resultado["alertar"],
             motivos=resultado["motivos"],
+            golpe=resultado.get("golpe"),
         )

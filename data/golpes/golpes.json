@@ -1,0 +1,264 @@
+[
+  {
+    "id": "falso-parente-numero-novo",
+    "nome": "golpe do falso parente",
+    "remetente": "familia",
+    "numero_novo": true,
+    "pedidos": ["pix"],
+    "descricao": "O golpista pega a foto de um parente nas redes sociais e manda mensagem de um número novo, dizendo que trocou de celular depois de um assalto ou de perder o aparelho. Logo em seguida pede uma transferência urgente por PIX.",
+    "sinais": ["número novo com a foto de um parente", "desculpa de celular perdido, roubado ou quebrado", "pedido de PIX com urgência", "conta de destino em nome de outra pessoa"],
+    "acao": "Não faça o PIX. Ligue para o número antigo da pessoa, aquele que está salvo na sua agenda.",
+    "fonte": {"nome": "Febraban: golpes em aplicativos de mensagens (28/07/2022)", "url": "https://portal.febraban.org.br/noticia/3823/pt-br/"}
+  },
+  {
+    "id": "parente-whatsapp-clonado",
+    "nome": "golpe do WhatsApp clonado",
+    "remetente": "familia",
+    "numero_novo": false,
+    "pedidos": ["pix"],
+    "descricao": "O golpista clona o WhatsApp de um parente ou amigo e, usando o número verdadeiro dele, manda mensagem para os contatos pedindo dinheiro emprestado por PIX.",
+    "sinais": ["pedido de dinheiro pelo aplicativo de mensagem", "jeito de escrever diferente do normal", "pressa para receber", "conta de destino em nome de outra pessoa"],
+    "acao": "Não faça o PIX antes de falar com a pessoa por ligação de voz, não só por mensagem.",
+    "fonte": {"nome": "Febraban: golpes em aplicativos de mensagens (28/07/2022)", "url": "https://portal.febraban.org.br/noticia/3823/pt-br/"}
+  },
+  {
+    "id": "falso-sequestro",
+    "nome": "golpe do falso sequestro",
+    "remetente": "familia",
+    "pedidos": ["pix", "ligar"],
+    "descricao": "Uma ligação toca uma voz chorando que chama a vítima de mãe ou pai e diz que foi sequestrada. Depois outro criminoso exige um resgate imediato e mantém a vítima na linha.",
+    "sinais": ["voz chorando que não diz o próprio nome", "ameaça e pedido de resgate imediato", "pressão para não desligar"],
+    "acao": "Mantenha a calma e não fale o nome de ninguém. Desligue e ligue para o seu parente de outro telefone.",
+    "fonte": {"nome": "Febraban: 10 golpes mais comuns contra idosos (04/09/2024)", "url": "https://portal.febraban.org.br/noticia/4177/pt-br"}
+  },
+  {
+    "id": "falsa-central-senha",
+    "nome": "golpe da falsa central do banco",
+    "remetente": "banco",
+    "pedidos": ["senha", "codigo", "dados"],
+    "descricao": "Alguém se passa por funcionário do banco, diz que há um problema na conta ou no cartão e pede senha, token ou dados pessoais para resolver. Às vezes o número que aparece na tela é parecido com o do banco.",
+    "sinais": ["pedido de senha, token ou código", "problema urgente na conta", "número que parece ser do banco"],
+    "acao": "Não passe nada. Desligue e ligue para o número que está atrás do seu cartão, de outro telefone.",
+    "fonte": {"nome": "Febraban: as versões do golpe da falsa central (01/07/2026)", "url": "https://portal.febraban.org.br/noticia/4471/pt-br/"}
+  },
+  {
+    "id": "falsa-central-0800",
+    "nome": "golpe do falso 0800 do banco",
+    "remetente": "banco",
+    "pedidos": ["ligar"],
+    "descricao": "Uma mensagem diz que houve uma compra ou um PIX suspeito e manda ligar para um número 0800. Quem atende é o golpista, que pede dados e senhas para cancelar a operação.",
+    "sinais": ["mensagem com número 0800 para ligar", "aviso de compra ou PIX que você não fez", "pedido para confirmar dados"],
+    "acao": "Não ligue para o número da mensagem. Ligue só para o número que está atrás do seu cartão.",
+    "fonte": {"nome": "Ministério da Fazenda e Febraban: golpes mais comuns com o PIX (09/03/2023)", "url": "https://www.gov.br/fazenda/pt-br/composicao/orgaos/orgaos-colegiados/crsfn/acesso-a-informacao/educacao-financeira/copy_of_noticias/tentativas-de-fraudes-e-golpes-mais-comuns-com-o-pix-conheca-quais-sao-e-saiba-como-evita-los"}
+  },
+  {
+    "id": "conta-de-seguranca",
+    "nome": "golpe da conta de segurança",
+    "remetente": "banco",
+    "pedidos": ["pix"],
+    "descricao": "O falso funcionário diz que a agência ou o gerente está sendo investigado, ou que a conta foi invadida, e pede para transferir o dinheiro para uma conta de segurança enquanto o problema é resolvido.",
+    "sinais": ["pedido para transferir dinheiro para outra conta", "história de investigação ou de conta invadida", "urgência"],
+    "acao": "Não transfira nada. O banco nunca pede transferência para resolver problema. Ligue para o número atrás do seu cartão.",
+    "fonte": {"nome": "Febraban: as versões do golpe da falsa central (01/07/2026)", "url": "https://portal.febraban.org.br/noticia/4471/pt-br/"}
+  },
+  {
+    "id": "compra-suspeita",
+    "nome": "golpe da compra suspeita",
+    "remetente": "banco",
+    "pedidos": ["senha", "dados", "ligar"],
+    "descricao": "Uma ligação ou mensagem avisa sobre uma compra alta no cartão ou um acesso de um aparelho novo. Para cancelar, o golpista pede senha e dados, ou pede para ligar de volta na hora.",
+    "sinais": ["compra alta que você não fez", "aviso de aparelho novo na conta", "pedido de senha para cancelar"],
+    "acao": "Não passe senha nem dados. Desligue e confira a compra no aplicativo do banco ou pelo número atrás do cartão.",
+    "fonte": {"nome": "Febraban: as versões do golpe da falsa central (01/07/2026)", "url": "https://portal.febraban.org.br/noticia/4471/pt-br/"}
+  },
+  {
+    "id": "falso-motoboy",
+    "nome": "golpe do falso motoboy",
+    "remetente": "banco",
+    "pedidos": ["senha", "dados"],
+    "descricao": "O golpista liga dizendo que o cartão foi clonado, pede para cortar o cartão, digitar a senha no telefone e avisa que um motoboy vai buscar o cartão em casa. O chip continua funcionando e é usado nas compras.",
+    "sinais": ["pedido para entregar o cartão a alguém", "pedido para digitar a senha no telefone", "aviso de cartão clonado"],
+    "acao": "Não entregue o cartão a ninguém. Nenhum banco manda buscar cartão em casa. Ligue para o número atrás do cartão.",
+    "fonte": {"nome": "Febraban: 10 golpes mais comuns contra idosos (04/09/2024)", "url": "https://portal.febraban.org.br/noticia/4177/pt-br"}
+  },
+  {
+    "id": "mao-fantasma",
+    "nome": "golpe da mão fantasma",
+    "remetente": "banco",
+    "pedidos": ["link"],
+    "descricao": "O falso funcionário diz que a conta foi invadida e manda um link para instalar um aplicativo que resolveria o problema. O aplicativo dá ao golpista o controle do celular e da conta.",
+    "sinais": ["pedido para instalar aplicativo", "link enviado por mensagem", "conta supostamente invadida"],
+    "acao": "Não instale nada e não clique no link. Desligue e ligue para o seu banco de outro telefone.",
+    "fonte": {"nome": "Febraban: golpes mais aplicados no 1º semestre de 2025 (11/11/2025)", "url": "https://portal.febraban.org.br/noticia/4381/pt-br/"}
+  },
+  {
+    "id": "milhas-expirando",
+    "nome": "golpe das milhas do cartão",
+    "remetente": "banco",
+    "pedidos": ["link"],
+    "descricao": "Um SMS avisa que as milhas ou os pontos do cartão vão expirar e traz um link para resgatar. O link pode instalar um vírus ou roubar os dados do cartão.",
+    "sinais": ["SMS com link", "pontos ou milhas prestes a vencer", "prazo curto"],
+    "acao": "Não clique no link. Confira seus pontos direto no aplicativo do banco.",
+    "fonte": {"nome": "Febraban: as versões do golpe da falsa central (01/07/2026)", "url": "https://portal.febraban.org.br/noticia/4471/pt-br/"}
+  },
+  {
+    "id": "devolucao-de-emprestimo",
+    "nome": "golpe da devolução do empréstimo",
+    "remetente": "banco",
+    "pedidos": ["pix"],
+    "descricao": "Com os dados da vítima, o golpista faz um empréstimo que cai na conta dela. Depois liga dizendo que foi um erro e pede para devolver o dinheiro por PIX ou boleto para cancelar.",
+    "sinais": ["dinheiro de empréstimo que você não pediu", "pedido de devolução por PIX ou boleto", "contato dizendo ser do banco"],
+    "acao": "Não devolva nada por PIX. Fale com o seu banco pelo aplicativo ou pelo número atrás do cartão.",
+    "fonte": {"nome": "Febraban: golpes mais aplicados no 1º semestre de 2025 (11/11/2025)", "url": "https://portal.febraban.org.br/noticia/4381/pt-br/"}
+  },
+  {
+    "id": "falso-consignado",
+    "nome": "golpe do falso empréstimo consignado",
+    "remetente": "banco",
+    "pedidos": ["pix", "dados"],
+    "descricao": "Alguém oferece um empréstimo consignado com condições muito boas, mas pede para pagar uma taxa ou uma parcela adiantada para liberar o dinheiro.",
+    "sinais": ["taxa ou parcela paga antes de receber", "condições boas demais", "pedido de dados pessoais"],
+    "acao": "Não pague nada adiantado. Nenhum empréstimo verdadeiro cobra taxa antes de liberar o dinheiro.",
+    "fonte": {"nome": "Febraban: 10 golpes mais comuns contra idosos (04/09/2024)", "url": "https://portal.febraban.org.br/noticia/4177/pt-br"}
+  },
+  {
+    "id": "inss-prova-de-vida-link",
+    "nome": "golpe da prova de vida do INSS",
+    "remetente": "inss",
+    "pedidos": ["link", "dados"],
+    "descricao": "Uma mensagem de WhatsApp ou SMS diz que o aposentado precisa fazer a prova de vida ou a biometria por um link, senão o benefício será cortado. O link rouba os dados.",
+    "sinais": ["link para prova de vida ou biometria", "ameaça de corte do benefício", "mensagem por WhatsApp ou SMS"],
+    "acao": "Não clique no link. O INSS não manda link por mensagem. Se quiser conferir, ligue para o 135.",
+    "fonte": {"nome": "INSS: não envia SMS sobre corte de benefício por falta de prova de vida (12/08/2026)", "url": "https://www.gov.br/inss/pt-br/assuntos/noticias/inss-nao-envia-sms-para-informar-sobre-corte-de-beneficio-por-falta-de-prova-de-vida"}
+  },
+  {
+    "id": "inss-beneficio-bloqueado",
+    "nome": "golpe do benefício bloqueado",
+    "remetente": "inss",
+    "pedidos": ["link", "ligar", "pix"],
+    "descricao": "Uma mensagem avisa que a aposentadoria ou o benefício foi bloqueado ou será suspenso e pede para clicar num link, ligar para um número ou pagar uma taxa para regularizar.",
+    "sinais": ["aviso de benefício bloqueado ou suspenso", "pedido para pagar taxa ou ligar", "prazo curto"],
+    "acao": "Não clique, não ligue e não pague. O INSS não avisa corte de benefício por mensagem. Confira no 135.",
+    "fonte": {"nome": "INSS: não envia SMS sobre corte de benefício por falta de prova de vida (12/08/2026)", "url": "https://www.gov.br/inss/pt-br/assuntos/noticias/inss-nao-envia-sms-para-informar-sobre-corte-de-beneficio-por-falta-de-prova-de-vida"}
+  },
+  {
+    "id": "inss-falso-servidor",
+    "nome": "golpe do falso servidor do INSS",
+    "remetente": "inss",
+    "pedidos": ["dados", "ligar"],
+    "descricao": "Alguém liga ou aparece em casa dizendo ser do INSS para fazer a prova de vida ou atualizar o cadastro, e pede documentos, fotos ou dados pessoais.",
+    "sinais": ["ligação ou visita em nome do INSS", "pedido de documentos ou foto", "conversa sobre prova de vida"],
+    "acao": "Não passe nenhum dado. O INSS não liga nem vai à casa de ninguém para prova de vida. Confira no 135.",
+    "fonte": {"nome": "INSS: não envia SMS sobre corte de benefício por falta de prova de vida (12/08/2026)", "url": "https://www.gov.br/inss/pt-br/assuntos/noticias/inss-nao-envia-sms-para-informar-sobre-corte-de-beneficio-por-falta-de-prova-de-vida"}
+  },
+  {
+    "id": "taxa-frete-correios",
+    "nome": "golpe da taxa de entrega dos Correios",
+    "remetente": "loja",
+    "pedidos": ["pix", "link"],
+    "descricao": "Uma mensagem em nome dos Correios diz que a encomenda está retida e cobra uma taxa pequena por um link ou por PIX para liberar a entrega.",
+    "sinais": ["encomenda retida", "taxa pequena por link ou PIX", "mensagem por SMS, WhatsApp ou e-mail"],
+    "acao": "Não pague pelo link. Os Correios não mandam link de pagamento. Confira a encomenda no site ou aplicativo oficial dos Correios.",
+    "fonte": {"nome": "Correios: segurança e golpes", "url": "https://www.correios.com.br/falecomoscorreios/seguranca"}
+  },
+  {
+    "id": "taxa-alfandega-receita",
+    "nome": "golpe da taxa de importação",
+    "remetente": "loja",
+    "pedidos": ["pix", "link"],
+    "descricao": "Um SMS em nome da Receita Federal ou dos Correios diz que uma compra do exterior tem imposto atrasado e manda pagar por link ou PIX, às vezes ameaçando sujar o nome no SPC ou Serasa.",
+    "sinais": ["imposto de compra internacional", "link ou PIX por SMS", "ameaça de SPC ou Serasa"],
+    "acao": "Não pague pela mensagem. Imposto de importação só se paga no site ou aplicativo dos Correios, em Minhas Importações.",
+    "fonte": {"nome": "Receita Federal: golpe via SMS", "url": "https://www.gov.br/receitafederal/pt-br/assuntos/aduana-e-comercio-exterior/manuais/remessas-postal-e-expressa/e-golpe/golpe-por-carta/golpe-por-carta"}
+  },
+  {
+    "id": "falsa-venda",
+    "nome": "golpe da loja falsa",
+    "remetente": "loja",
+    "pedidos": ["pix", "link"],
+    "descricao": "Golpistas criam sites e perfis de lojas falsas e mandam promoções por mensagem, com preço muito abaixo do normal. A vítima paga por PIX e o produto nunca chega.",
+    "sinais": ["preço muito abaixo do normal", "loja nova nas redes sociais", "só aceita PIX", "pressa para comprar"],
+    "acao": "Não pague. Compre só em lojas que você já conhece, pelo site ou aplicativo oficial.",
+    "fonte": {"nome": "Febraban: golpes mais aplicados no 1º semestre de 2025 (11/11/2025)", "url": "https://portal.febraban.org.br/noticia/4381/pt-br/"}
+  },
+  {
+    "id": "falso-brinde",
+    "nome": "golpe do falso presente",
+    "remetente": "loja",
+    "pedidos": ["pix", "dados"],
+    "descricao": "Alguém avisa que há um presente ou brinde para entregar, como flores ou chocolate, e na entrega cobra uma taxa no cartão, numa maquininha com o visor quebrado, para ver a senha.",
+    "sinais": ["presente inesperado sem saber quem mandou", "taxa de entrega", "maquininha com visor quebrado"],
+    "acao": "Não aceite o presente e não pague taxa. Desconfie de brinde que você não pediu.",
+    "fonte": {"nome": "Febraban: 10 golpes mais comuns contra idosos (04/09/2024)", "url": "https://portal.febraban.org.br/noticia/4177/pt-br"}
+  },
+  {
+    "id": "falso-boleto",
+    "nome": "golpe do boleto falso",
+    "remetente": "loja",
+    "pedidos": ["pix"],
+    "descricao": "O golpista manda um boleto parecido com o verdadeiro, mas o dinheiro vai para a conta dele. Conta a pressa e a falta de conferência de quem paga.",
+    "sinais": ["boleto recebido por mensagem", "nome do beneficiário diferente da empresa", "valor ou vencimento estranhos"],
+    "acao": "Não pague ainda. Confira o nome de quem vai receber, e na dúvida pegue a segunda via no site da empresa.",
+    "fonte": {"nome": "Febraban: golpes mais aplicados no 1º semestre de 2025 (11/11/2025)", "url": "https://portal.febraban.org.br/noticia/4381/pt-br/"}
+  },
+  {
+    "id": "clonagem-whatsapp-codigo",
+    "nome": "golpe da clonagem do WhatsApp",
+    "remetente": "outro",
+    "pedidos": ["codigo"],
+    "descricao": "Alguém se passa por uma empresa onde a vítima tem cadastro e pede o código de segurança que chegou por SMS, dizendo que é para atualizar ou confirmar o cadastro. Com o código, clona o WhatsApp.",
+    "sinais": ["pedido do código que chegou por SMS", "desculpa de atualização ou protocolo", "contato de empresa por mensagem"],
+    "acao": "Não passe o código para ninguém. Ative a verificação em duas etapas no WhatsApp.",
+    "fonte": {"nome": "Febraban: golpes em aplicativos de mensagens (28/07/2022)", "url": "https://portal.febraban.org.br/noticia/3823/pt-br/"}
+  },
+  {
+    "id": "valores-a-receber",
+    "nome": "golpe dos valores a receber",
+    "remetente": "outro",
+    "pedidos": ["link", "pix", "dados"],
+    "descricao": "Uma mensagem em nome do Banco Central diz que há dinheiro esquecido para receber e manda um link ou pede uma taxa para liberar o valor.",
+    "sinais": ["dinheiro esquecido para receber", "link ou taxa para liberar", "mensagem em nome do Banco Central"],
+    "acao": "Não clique e não pague nada. O Banco Central não manda link. A consulta é só no site valores a receber do Banco Central.",
+    "fonte": {"nome": "Banco Central: Sistema Valores a Receber", "url": "https://valoresareceber.bcb.gov.br/"}
+  },
+  {
+    "id": "cobranca-falsa-governo",
+    "nome": "golpe da cobrança falsa do governo",
+    "remetente": "outro",
+    "pedidos": ["pix", "link"],
+    "descricao": "Uma conta de WhatsApp com a cara do governo cobra uma dívida, um CPF irregular ou uma encomenda retida, usando dados verdadeiros da vítima, e ameaça bloqueio se ela não pagar por PIX ou boleto.",
+    "sinais": ["cobrança do governo por WhatsApp", "ameaça de bloqueio ou protesto", "dados pessoais verdadeiros para parecer real"],
+    "acao": "Não pague e não clique. Nenhum órgão do governo cobra dívida por WhatsApp. Bloqueie o contato.",
+    "fonte": {"nome": "gov.br: golpistas se passam por entidades do governo no WhatsApp (2026)", "url": "https://www.gov.br/cisc/pt-br/alertas-de-golpes-digitais/golpistas-enviam-mensagens-no-whatsapp-se-passando-por-entidades-do-governo"}
+  },
+  {
+    "id": "pix-errado",
+    "nome": "golpe do PIX errado",
+    "remetente": "outro",
+    "pedidos": ["pix"],
+    "descricao": "O golpista faz um PIX para a vítima e depois diz que mandou por engano, pedindo a devolução para outra conta. Em seguida pede o dinheiro de volta ao banco, e a vítima perde o valor duas vezes.",
+    "sinais": ["PIX que você não esperava", "pedido de devolução para outra conta", "pressa"],
+    "acao": "Não faça um PIX novo. Se o dinheiro caiu mesmo, use a opção de devolver no aplicativo do banco.",
+    "fonte": {"nome": "Agência Brasil: entenda o golpe do PIX errado (11/07/2024)", "url": "https://agenciabrasil.ebc.com.br/economia/noticia/2024-07/entenda-o-golpe-do-pix-errado-e-saiba-como-nao-ser-enganado"}
+  },
+  {
+    "id": "falso-advogado",
+    "nome": "golpe do falso advogado",
+    "remetente": "outro",
+    "pedidos": ["pix", "dados"],
+    "descricao": "Alguém se passa por advogado e diz que a vítima ganhou um processo ou tem uma indenização para receber, mas precisa pagar uma taxa antes para liberar o dinheiro.",
+    "sinais": ["indenização ou processo ganho", "taxa paga antes de receber", "pressa"],
+    "acao": "Não pague nada. A Justiça não cobra taxa para liberar indenização. Ligue para o seu advogado no número que você já tem.",
+    "fonte": {"nome": "Polícia Civil do Paraná: golpe do falso advogado", "url": "https://www.policiacivil.pr.gov.br/Pagina/Golpe-falso-advogado"}
+  },
+  {
+    "id": "link-phishing",
+    "nome": "golpe do link falso",
+    "remetente": "outro",
+    "pedidos": ["link", "dados"],
+    "descricao": "Uma mensagem com um link leva para uma página falsa, parecida com a de um banco, loja ou órgão do governo, que pede dados pessoais, senha ou cartão.",
+    "sinais": ["link recebido por mensagem", "página que pede senha ou dados", "promessa ou ameaça para fazer clicar"],
+    "acao": "Não clique no link. Se precisar, entre no site ou aplicativo oficial digitando você mesmo.",
+    "fonte": {"nome": "CERT.br: Cartilha de Segurança, fascículo Golpes", "url": "https://cartilha.cert.br/fasciculos/golpes/fasciculo-golpes.pdf"}
+  }
+]

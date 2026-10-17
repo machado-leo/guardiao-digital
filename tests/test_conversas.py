@@ -58,3 +58,21 @@ def test_nunca_autoriza_pagamento():
     turno = conversar("Minha neta", "Não, é o mesmo número", "Nada", "Não")
     assert "pode pagar" not in turno.fala.lower()
     assert "não pague" in turno.fala.lower()
+
+
+def test_falso_sequestro_avisa_a_familia():
+    turno = conversar(
+        "Meu neto",
+        "Não sei, era uma ligação, uma voz chorando",
+        "Pediram dinheiro de resgate, senão iam machucar ele",
+        "Sim, disseram pra eu não desligar",
+    )
+    assert turno.alertar is True
+    assert "falso sequestro" in turno.fala
+
+
+def test_sequestro_pula_a_pergunta_do_numero_novo():
+    guardiao = Guardiao()
+    guardiao.iniciar("s")
+    turno = guardiao.responder("s", "Ligaram dizendo que sequestraram meu neto")
+    assert turno.pergunta_id == "pedido_familia"

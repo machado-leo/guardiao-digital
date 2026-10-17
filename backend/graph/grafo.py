@@ -1,7 +1,7 @@
 """Grafo de decisão em LangGraph.
 
     planejar ─┬─> perguntar ──> planejar      (enquanto houver pergunta)
-              └─> avaliar ──> concluir ──> fim
+              └─> avaliar ──> consultar_base ──> concluir ──> fim
 
 Cada pergunta pausa o grafo com interrupt(); a próxima fala do idoso retoma a
 execução de onde parou. O estado de cada conversa fica no checkpointer, pela
@@ -15,8 +15,9 @@ from langgraph.types import interrupt
 from backend.graph.estado import Estado
 from backend.graph.interpretar import interpretar
 from backend.graph.perguntas import PERGUNTAS, proxima_pergunta
-from backend.graph.risco import avaliar_risco, deve_alertar
+from backend.graph.risco import avaliar_risco, deve_alertar, nivel
 from backend.graph.veredito import redigir_veredito
+from backend.rag.busca import buscar
 
 
 def planejar(estado: Estado) -> dict:
@@ -29,12 +30,33 @@ def perguntar(estado: Estado) -> dict:
     return {
         **interpretar(pergunta_id, resposta),
         "respondidas": [*estado.get("respondidas", []), pergunta_id],
+        "relato": [*estado.get("relato", []), resposta.strip()],
     }
 
 
 def avaliar(estado: Estado) -> dict:
     risco, motivos = avaliar_risco(estado)
     return {"risco": risco, "motivos": motivos, "alertar": deve_alertar(risco)}
+
+
+def consultar_base(estado: Estado) -> dict:
+    # Sem risco não há golpe para citar; pula a busca e economiza tempo da Alexa.
+    if nivel(estado["risco"]) == "baixo":
+        return {"golpe": None}
+    achado = buscar(estado)
+    if achado is None:
+        return {"golpe": None}
+    golpe, distancia = achado
+    return {
+        "golpe": {
+            "id": golpe.id,
+            "nome": golpe.nome,
+            "acao": golpe.acao,
+            "fonte": golpe.fonte.nome,
+            "url": golpe.fonte.url,
+            "distancia": round(distancia, 3),
+        }
+    }
 
 
 def concluir(estado: Estado) -> dict:
@@ -50,11 +72,13 @@ def construir_grafo(checkpointer: BaseCheckpointSaver):
     grafo.add_node("planejar", planejar)
     grafo.add_node("perguntar", perguntar)
     grafo.add_node("avaliar", avaliar)
+    grafo.add_node("consultar_base", consultar_base)
     grafo.add_node("concluir", concluir)
 
     grafo.add_edge(START, "planejar")
     grafo.add_conditional_edges("planejar", _depois_de_planejar, ["perguntar", "avaliar"])
     grafo.add_edge("perguntar", "planejar")
-    grafo.add_edge("avaliar", "concluir")
+    grafo.add_edge("avaliar", "consultar_base")
+    grafo.add_edge("consultar_base", "concluir")
     grafo.add_edge("concluir", END)
     return grafo.compile(checkpointer=checkpointer)

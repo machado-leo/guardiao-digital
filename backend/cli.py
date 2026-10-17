@@ -29,6 +29,9 @@ def main() -> None:
     print(f"\n[risco {turno.risco}/100 · alerta à família: {'sim' if turno.alertar else 'não'}]")
     if turno.motivos:
         print(f"[motivos: {', '.join(turno.motivos)}]")
+    if turno.golpe:
+        print(f"[golpe parecido: {turno.golpe['nome']} (distância {turno.golpe['distancia']})]")
+        print(f"[fonte: {turno.golpe['fonte']} - {turno.golpe['url']}]")
 
 
 if __name__ == "__main__":
