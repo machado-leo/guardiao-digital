@@ -5,15 +5,15 @@ Prazo final: **29/10**.
 ## 1. Validações iniciais
 - [ ] Criar uma skill "Guardião" de teste e confirmar que "Alexa, abre o Guardião" funciona na Dot 3
 - [ ] Testar o `AMAZON.SearchQuery` em pt-BR com uma frase de apoio
-- [ ] Medir quanto o GPT demora numa chamada curta, para saber o que cabe nos ~8 segundos da Alexa
+- [x] Medir quanto o GPT demora numa chamada curta, para saber o que cabe nos ~8 segundos da Alexa (`gpt-6-luna`: 1,4 a 2,6 s por chamada)
 
 ## 2. Grafo de decisão (`backend/graph/`)
-- [ ] Definir o estado da conversa: `remetente`, `canal`, `numero_novo`, `pedido`, `urgencia`, `risco`
-- [ ] Criar os nós de pergunta e as ramificações para filho/neto, banco e INSS
-- [ ] Interpretar as respostas com regras e palavras-chave, chamando o GPT só quando elas não resolverem
-- [ ] Gerar o veredito com a regra fixa: nunca dizer "pode pagar"
-- [ ] Criar uma CLI para testar a conversa por texto
-- [ ] Ligar o Langfuse ao grafo (`CallbackHandler` no `config`, `sessionId` da Alexa como `session_id`), desligável por `LANGFUSE_ENABLED`
+- [x] Definir o estado da conversa: `remetente`, `canal`, `numero_novo`, `pedido`, `urgencia`, `risco`
+- [x] Criar os nós de pergunta e as ramificações para filho/neto, banco e INSS
+- [x] Interpretar as respostas com regras e palavras-chave, chamando o GPT só quando elas não resolverem
+- [x] Gerar o veredito com a regra fixa: nunca dizer "pode pagar"
+- [x] Criar uma CLI para testar a conversa por texto
+- [x] Ligar o Langfuse ao grafo (`CallbackHandler` no `config`, `sessionId` da Alexa como `session_id`), desligável por `LANGFUSE_ENABLED`
 
 ## 3. Pontuação de risco
 - [ ] Definir uma regra de 0 a 100 que dê para explicar (ex.: número novo +30, PIX +30, urgência +20)
