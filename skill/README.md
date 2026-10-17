@@ -40,7 +40,9 @@ funciona com o domínio `trycloudflare.com`.
   3. Em *Availability → Beta Test*, adicione o e-mail da conta Amazon da Dot. A pessoa
      abre o convite logada nessa conta e ativa a skill. O beta dura 90 dias.
 
-<img src="assets/skill-app-alexa.jpg" alt="Skill Guardião Digital ativa no aplicativo da Alexa" width="260" />
+<p align="center">
+  <img src="assets/skill-app-alexa.jpg" alt="Skill Guardião Digital ativa no aplicativo da Alexa" width="260" />
+</p>
 
 ## Como a conversa funciona
 

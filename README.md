@@ -139,7 +139,9 @@ python -m pytest          # 78 testes, só com as regras (sem GPT, Langfuse nem 
 O passo a passo do console da Alexa, do beta test e da Echo Dot está em
 [`skill/README.md`](skill/README.md).
 
-<img src="skill/assets/skill-app-alexa.jpg" alt="Skill Guardião Digital ativa no aplicativo da Alexa" width="260" />
+<p align="center">
+  <img src="skill/assets/skill-app-alexa.jpg" alt="Skill Guardião Digital ativa no aplicativo da Alexa" width="260" />
+</p>
 
 ## Observabilidade
 
