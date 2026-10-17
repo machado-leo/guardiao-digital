@@ -20,8 +20,8 @@ REMETENTES = [
     ("banco", [r"bancos?", r"caixa", r"bradesco", r"itau", r"santander", r"nubank", r"central",
                r"gerente", r"cartao"]),
     ("loja", [r"lojas?", r"correios", r"entregas?", r"frete", r"encomendas?", r"pacotes?", r"compras?",
-              r"mercado livre", r"shopee", r"amazon"]),
-    ("outro", [r"nao sei", r"nao conhec\w*", r"desconhecid[oa]", r"estranh[oa]"]),
+              r"mercados?", r"supermercados?", r"farmacias?", r"shopee", r"amazon"]),
+    ("outro", [r"prefeitura", r"nao sei", r"nao conhec\w*", r"desconhecid[oa]", r"estranh[oa]"]),
 ]
 
 # Ordem de prioridade: o pedido mais perigoso ganha quando aparecem vários.
@@ -44,16 +44,18 @@ NADA_NO_RELATO = [r"nao pediu"]
 # Relatos curtos ("meu filho") não justificam esperar o GPT; as perguntas seguintes completam.
 PALAVRAS_PARA_USAR_GPT = 4
 
-SIM = [r"sim", r"ta", r"esta", r"estava", r"isso", r"uhum", r"aham", r"claro", r"pediu", r"mandou",
-       r"falou", r"disse", r"positivo", r"exato", r"com certeza"]
+SIM = [r"sim", r"ta", r"esta", r"estava", r"isso", r"uhum", r"aham", r"claro",
+       r"positivo", r"exato", r"com certeza", r"foi sim"]
 NAO = [r"nao", r"nunca", r"nada", r"negativo", r"nem"]
 DUVIDA = [r"nao sei", r"sei la", r"nao lembro", r"talvez"]
-# Na urgência, "falou que precisa para..." não é um sim: verbos de fala só valem para pedidos.
+# Verbos de fala ("mandou", "pediu") só contam como "sim" quando a pergunta é sobre um pedido.
+SIM_PEDIDO = [*SIM, r"pediu", r"pediram", r"mandou", r"mandaram", r"falou", r"falaram", r"disse", r"disseram"]
+# Na urgência, "está precisando..." não é um sim: só confirmações diretas contam.
 SIM_EXPLICITO = [r"sim", r"isso", r"uhum", r"aham", r"claro", r"positivo", r"exato", r"com certeza", r"foi sim"]
 
 NUMERO_NOVO = [r"novo", r"trocou", r"outro numero", r"caiu", r"quebr\w*", r"perd\w*", r"roubad[oa]",
                r"nao tinha", r"nao conhec\w*"]
-NUMERO_ANTIGO = [r"mesmo", r"de sempre", r"conhecido"]
+NUMERO_ANTIGO = [r"mesmo", r"de sempre", r"conhecido", r"antig\w*"]
 
 URGENCIA = [r"urgen\w*", r"agora", r"hoje", r"rapido", r"prazo", r"bloque\w*", r"cancel\w*", r"cort\w*",
             r"pres[oa]", r"multa", r"amea\w*", r"senao", r"nao deslig\w*", r"resgate", r"machuc\w*",
@@ -246,7 +248,7 @@ def _interpretar_pergunta(pergunta_id: str, resposta: str, texto: str) -> dict:
     if pergunta_id == "link_inss":
         # "Sim" aqui quer dizer que mandaram link.
         if _primeiro(texto, PEDIDOS) is None and not _tem(texto, NADA):
-            mandou = _sim_ou_nao_com_llm(pergunta_id, resposta, texto)
+            mandou = _sim_ou_nao_com_llm(pergunta_id, resposta, texto, SIM_PEDIDO)
             return {"pedido": "nada" if mandou is False else "link", "valor": None}
         return _pedido(pergunta_id, resposta, texto)
 

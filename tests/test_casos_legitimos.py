@@ -14,7 +14,7 @@ CASOS = [
     ("minha filha pediu para eu comprar pão", {"numero_novo": "não, o número de sempre", "pedido_familia": "comprar pão na padaria", "urgencia": "não"}, "baixo"),
     ("o banco mandou mensagem avisando que a fatura fechou", {"pedido_banco": "não pediu nada, só avisou", "urgencia": "não"}, "baixo"),
     ("meu neto ligou para saber como eu estou", {"numero_novo": "não, é o número dele de sempre", "pedido_familia": "não pediu nada", "urgencia": "não"}, "baixo"),
-    ("a farmácia avisou que meu remédio chegou", {"remetente": "uma loja", "pedido_geral": "não pediu nada, só avisou", "urgencia": "não"}, "baixo"),
+    ("a farmácia avisou que meu remédio chegou", {"pedido_geral": "não pediu nada, só avisou", "urgencia": "não"}, "baixo"),
     ("o inss mandou uma carta dizendo que meu benefício foi reajustado", {"link_inss": "não, não mandaram link nenhum", "urgencia": "não"}, "baixo"),
     ("os correios deixaram um aviso de entrega", {"pedido_geral": "nada, só buscar na agência", "urgencia": "não"}, "baixo"),
     ("minha vizinha pediu para eu regar as plantas", {"remetente": "uma vizinha", "pedido_geral": "regar as plantas", "urgencia": "não"}, "baixo"),

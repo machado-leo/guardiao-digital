@@ -63,6 +63,6 @@ Prazo final: **29/10**.
 
 ## 10. Extras (só se sobrar tempo)
 - [ ] Script de RSS para adicionar golpes novos à base
-- [ ] Reconhecer farmácia, mercado e prefeitura como remetentes conhecidos
+- [x] Reconhecer farmácia, mercado e prefeitura como remetentes conhecidos
 
 **Se apertar, cortar nesta ordem:** extras, a tela "por dentro do grafo" e as ramificações de INSS e banco. O caso do falso parente sozinho já sustenta a demo.

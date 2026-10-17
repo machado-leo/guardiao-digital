@@ -139,3 +139,8 @@ def test_explicar_o_motivo_nao_conta_como_urgencia():
     assert interpretar("urgencia", "falou que precisa para conectar no banco") == {"urgencia": None}
     assert interpretar("urgencia", "sim") == {"urgencia": True}
     assert interpretar("urgencia", "disse que era para hoje") == {"urgencia": True}
+    assert interpretar("numero_novo", "ele falou que é o número antigo") == {"numero_novo": False}
+    assert interpretar("numero_novo", "falou que já tinha esse telefone") == {"numero_novo": None}
+    assert interpretar("remetente", "do mercado") == {"remetente": "loja"}
+    assert interpretar("remetente", "da prefeitura") == {"remetente": "outro"}
+

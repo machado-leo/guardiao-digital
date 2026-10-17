@@ -3,8 +3,8 @@ Oct 14, 2026 · @Leonardo
 ## Resumo do projeto
 O Guardião Digital é um assistente de voz que ajuda pessoas idosas a descobrir, na hora, se uma mensagem ou ligação é golpe, e avisa a família quando o risco é alto. O projeto participa do Simula & Simplifica: Algoritmos em Ação (edição 2026.2).
 - Público: pessoas idosas ou com baixo letramento digital.
-- Canal principal: Alexa (skill própria "Guardião"), com Telegram para alertas à família.
-- Cérebro: grafo de decisão em LangGraph + base de golpes consultada por RAG + modelo GPT via API.
+- Canal principal: Alexa (skill própria "Guardião Digital"), com Telegram para alertas à família.
+- Cérebro: grafo de decisão em LangGraph + base de 26 golpes consultada por RAG (ChromaDB) + modelo GPT via API.
 - Etapa 1 (Observe): entregue, nota ponderada 9,35. O parecer destacou a relevância social e indicou soluções por voz como caminho.
 ## O problema (Etapa 1 – Observe)
 O idoso que recebe uma mensagem suspeita depende de um familiar estar disponível naquele instante para saber se é golpe. Quando ninguém responde a tempo, a pressão do golpista vence.
@@ -19,11 +19,11 @@ Passo a passo manual hoje:
 - Decide: se a família responde a tempo, a fraude é evitada; se não, ele faz o PIX.
 Gargalo (Etapas 3 e 4): a dependência do tempo de resposta do familiar e a falta de um canal acessível. Sob pressão, muitos idosos não usam navegador ou buscador; falar em voz alta é o jeito mais natural de pedir ajuda.
 ## A solução proposta
-O Guardião substitui a espera pelo familiar por uma verificação imediata por voz: ele faz perguntas curtas, compara o caso com golpes conhecidos, dá uma orientação clara e avisa a família se o risco for alto.
-- Pergunta em vez de esperar: o idoso diz "Alexa, abre o Guardião" e o assistente conduz a conversa com perguntas de 2 a 4 segundos de resposta.
-- Compara com golpes reais: a situação é cruzada com uma base de golpes brasileiros e regras oficiais (bancos, INSS, Banco Central).
+O Guardião substitui a espera pelo familiar por uma verificação imediata por voz: ele escuta o relato, pergunta só o que faltou, compara o caso com golpes conhecidos, dá uma orientação clara e avisa a família se o risco for alto.
+- Escuta e conduz com perguntas curtas: o idoso diz "Alexa, abre o Guardião Digital", conta o que aconteceu e o assistente só pergunta o que ficou faltando, com respostas de 2 a 4 segundos.
+- Compara com golpes reais: a situação é cruzada com uma base de 26 golpes brasileiros documentados por fontes oficiais (Febraban, INSS, Banco Central, Correios, Receita Federal, CERT.br).
 - Orienta sem termos técnicos: a resposta final tem uma ou duas frases, em tom calmo, com uma ação clara ("não faça o PIX, ligue para o número antigo do seu filho").
-- Avisa a família: se o risco for crítico, o filho ou neto responsável recebe um alerta no Telegram.
+- Avisa a família: se o risco for alto (≥ 70), o filho ou neto responsável recebe um alerta no Telegram.
 - Regra fixa de segurança: o Guardião nunca diz "pode pagar". Na dúvida, a orientação é sempre confirmar por outro canal antes de qualquer pagamento.
 ## Arquitetura técnica
 A Alexa cuida só da voz (ouvir e falar); toda a decisão acontece no backend, dentro de um grafo de decisão em LangGraph.
@@ -31,25 +31,26 @@ A Alexa cuida só da voz (ouvir e falar); toda a decisão acontece no backend, d
 arquitetura · Alexa, backend, grafo de decisão, base de golpes e Telegram
 A cada resposta do idoso, a Alexa envia o texto ao backend, o grafo atualiza o estado da conversa e devolve a próxima pergunta ou o veredito. Se o risco passar do limiar, o alerta vai para o Telegram da família.
 Tecnologias:
-- Voz: Alexa Skills Kit, skill personalizada "Guardião", sessão aberta entre as perguntas (shouldEndSession: false).
-- Backend: Python, com endpoint HTTPS (túnel para testes ou AWS Lambda).
-- Decisão: LangGraph, com memória da conversa pelo sessionId da Alexa.
-- Base de golpes: ChromaDB ou FAISS, com 20 a 30 casos curados e suas fontes.
-- Modelo: GPT via API, usado para interpretar respostas e redigir a fala final.
-- Alerta: bot do Telegram.
+- Voz: Alexa Skills Kit, skill personalizada "Guardião Digital", sessão aberta entre as perguntas (shouldEndSession: false).
+- Backend: Python (FastAPI), com endpoint HTTPS.
+- Decisão: LangGraph, com memória da conversa pelo sessionId da Alexa e cálculo de risco determinístico (0 a 100) por tabela de sinais explicáveis.
+- Base de golpes: ChromaDB, com 26 casos curados à mão e suas fontes oficiais, filtrados por pedido e remetente antes da busca por similaridade.
+- Modelo: GPT via API (`gpt-6-luna`), acionado quando as regras de palavras-chave não resolvem e para escrever a fala final (com fala pronta de reserva se demorar mais de 3 s ou sair das regras).
+- Observabilidade: Langfuse, com mascaramento de números para conformidade com a LGPD.
+- Alerta: bot do Telegram em segundo plano.
 ## Fluxo de conversa por voz
-A conversa é feita de perguntas curtas, e a próxima pergunta depende da resposta anterior. Isso evita que a Alexa corte a fala do idoso e é onde o grafo de decisão mostra o "algoritmo em ação".
-Perguntas-base (cada resposta preenche um campo do estado):
-- Quem mandou a mensagem? → remetente (filho, neto, banco, INSS, loja)
-- Por onde chegou? É um número novo? → canal e numero_novo
-- O que pediram? → pedido (PIX, senha, código, clicar em link, ligar para um número)
+A conversa começa aberta ("Oi, eu sou o Guardião. Me conta o que aconteceu.") e só pergunta o que ainda falta no estado, seguindo o roteiro do tipo de remetente. Um relato completo vai direto ao veredito; quando faltam dados, perguntas curtas evitam que a Alexa corte a fala do idoso.
+Campos do estado preenchidos na conversa:
+- Quem mandou a mensagem? → remetente (familia, banco, inss, loja, outro)
+- É um número novo? Qual foi a desculpa? → numero_novo e desculpa
+- O que pediram? → pedido (pix, senha, codigo, link, dados, ligar, nada, outro)
 - Tem prazo ou ameaça? → urgencia
-Exemplos de ramificação:
-- Remetente "filho" + número novo → pergunta qual foi a desculpa para o número novo e quanto ele pediu.
-- Remetente "banco" → pergunta se pediram senha, código ou para ligar em algum número.
-- Remetente "INSS" → pergunta se mandaram link para prova de vida ou recadastramento.
+Exemplos de roteiro por remetente:
+- Remetente "familia" → pergunta se é número novo, a desculpa (quando houve pergunta do número novo), o que pediu e se houve urgência.
+- Remetente "banco" → pergunta se pediram senha, código ou para ligar em algum número, e se houve urgência.
+- Remetente "inss" → pergunta se mandaram link para prova de vida ou cadastro, e se houve urgência.
 Exemplo de diálogo:
-Idoso: Alexa, abre o Guardião. Guardião: Oi, seu José. Quem te mandou a mensagem? Idoso: Meu filho. Guardião: Ele está usando um número novo? Idoso: Tá, disse que o celular caiu na água. Guardião: E ele pediu dinheiro? Idoso: Pediu 400 reais no PIX. Guardião: Seu José, esse é um golpe muito comum. Não faça o PIX. Ligue agora para o número antigo do seu filho. Vou avisar a Ana para ela te ligar também.
+Idoso: Alexa, abre o Guardião Digital. Guardião: Oi, eu sou o Guardião. Me conta o que aconteceu. Idoso: Meu neto mandou mensagem de um número novo pedindo dinheiro no pix, disse que era urgente. Guardião: Isso tem muita cara de golpe, então não faça o PIX. Ligue para o número antigo do seu neto, que está salvo na sua agenda. Vou avisar sua família para te ligar também.
 Tempo de escuta: a sessão fica aberta entre as perguntas. Se o idoso demorar, a Alexa repete a pergunta com calma (reprompt) antes de encerrar.
 ## Diferencial
 O Guardião não compete em "inteligência geral": ele segue um protocolo de verificação, consulta golpes brasileiros atuais, nunca autoriza pagamento e avisa a família. Nenhuma das alternativas faz essas quatro coisas juntas.
@@ -76,16 +77,16 @@ Sobre a Alexa+: ela chegou ao Brasil em acesso antecipado em 18 de junho de 2026
 ## Escopo e cronograma
 O projeto cabe nas duas semanas restantes se o foco ficar no núcleo: conversa guiada, base de golpes, pontuação de risco e alerta à família. A Etapa 2 vai até 21/10 e a Etapa 3 termina em 29/10, com a live final às 19h (site do projeto).
 Etapa 2 – Construa (até 21/10)
-- ☐ Testar se uma skill de teste abre na Dot 3 com "Alexa, abre o Guardião" (primeiro dia)
-- ☐ Montar o grafo no LangGraph com 3 a 5 perguntas adaptativas
-- ☐ Criar a base de golpes curada à mão: 20 a 30 casos com fontes oficiais (Febraban, Banco Central, INSS, CERT.br)
-- ☐ Indexar a base em um banco vetorial local (ChromaDB ou FAISS)
-- ☐ Definir a regra de pontuação de risco (0 a 100) e o limiar para alertar a família
-- ☐ Criar o bot do Telegram que recebe o alerta
-- ☐ Testar tudo por texto antes de ligar na Alexa
+- ☑ Testar se uma skill de teste abre na Echo Dot com "Alexa, abre o Guardião Digital" (primeiro dia)
+- ☑ Montar o grafo no LangGraph com relato aberto e perguntas adaptativas
+- ☑ Criar a base de golpes curada à mão: 26 casos com fontes oficiais (Febraban, Banco Central, INSS, Correios, Receita Federal, CERT.br)
+- ☑ Indexar a base em um banco vetorial local (ChromaDB)
+- ☑ Definir a regra de pontuação de risco (0 a 100) e o limiar para alertar a família
+- ☑ Criar o bot do Telegram que recebe o alerta
+- ☑ Testar tudo por texto (CLI e 78 testes automatizados) antes de ligar na Alexa
 Etapa 3 – Apresente (até 29/10)
-- ☐ Ligar a skill da Alexa ao backend (endpoint HTTPS com túnel ou AWS Lambda)
-- ☐ Ajustar o tempo de resposta para caber no limite da Alexa
+- ☑ Ligar a skill da Alexa ao backend (endpoint HTTPS com túnel Cloudflare)
+- ☑ Ajustar o tempo de resposta para caber no limite da Alexa (entre 0,01 e ~3,5 s)
 - ☐ Gravar a comparação: a mesma pergunta na Alexa tradicional e no Guardião
 - ☐ (Opcional) Script que lê um feed RSS e adiciona golpes novos à base
 - ☐ Ensaiar a demonstração e preparar o plano B
