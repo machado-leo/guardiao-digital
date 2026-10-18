@@ -95,7 +95,7 @@ Etapa 2 – Construa (entrega até 20/10 · 2º Ranking em 21/10)
 - ☑ Indexar a base em um banco vetorial local (ChromaDB)
 - ☑ Definir a regra de pontuação de risco (0 a 100) e o limiar para alertar a família
 - ☑ Criar o bot do Telegram que recebe o alerta
-- ☑ Testar tudo por texto (CLI e 78 testes automatizados) antes de ligar na Alexa
+- ☑ Testar tudo por texto (CLI e 85 testes automatizados) antes de ligar na Alexa
 Etapa 3 – Apresente (de 21/10 a 29/10)
 - ☑ Ligar a skill da Alexa ao backend (endpoint HTTPS com túnel Cloudflare)
 - ☑ Ajustar o tempo de resposta para caber no limite da Alexa (entre 0,01 e ~3,5 s)

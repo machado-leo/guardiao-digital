@@ -15,24 +15,69 @@ class Pergunta:
     id: str
     texto: str
     campo: str  # campo do estado que a resposta preenche
+    # Pedaços de palavra que a versão do GPT precisa manter, para as opções da pergunta não sumirem.
+    manter: tuple[str, ...] = ()
+    objetivo: str = ""  # contexto para o GPT reescrever a pergunta sem mudar o que ela quer saber
 
 
 PERGUNTAS = {
     p.id: p
     for p in [
-        Pergunta("relato", "Me conta o que aconteceu.", "relato"),
+        Pergunta("relato", "Me conta o que aconteceu.", "relato", objetivo="entender a situação"),
         Pergunta(
             "remetente",
             "E quem foi que te procurou? Alguém da família, o banco, o INSS ou uma loja?",
             "remetente",
+            ("famil", "banco", "inss"),
+            "saber quem procurou a pessoa",
         ),
-        Pergunta("numero_novo", "Essa pessoa está usando um número novo, que você não conhecia?", "numero_novo"),
-        Pergunta("desculpa", "E ela explicou por que trocou de número?", "desculpa"),
-        Pergunta("pedido_familia", "E o que ela pediu? Dinheiro, algum código, outra coisa?", "pedido"),
-        Pergunta("pedido_banco", "E o que pediram? Sua senha, um código, ou para ligar em algum número?", "pedido"),
-        Pergunta("link_inss", "Mandaram algum link, para prova de vida ou para atualizar o cadastro?", "pedido"),
-        Pergunta("pedido_geral", "E o que pediram para você fazer?", "pedido"),
-        Pergunta("urgencia", "Falaram que era urgente, ou fizeram alguma ameaça?", "urgencia"),
+        Pergunta(
+            "numero_novo",
+            "Essa pessoa está usando um número novo, que você não conhecia?",
+            "numero_novo",
+            ("número",),
+            "saber se a mensagem veio de um número que a pessoa não conhecia",
+        ),
+        Pergunta(
+            "desculpa",
+            "E ela explicou por que trocou de número?",
+            "desculpa",
+            objetivo="saber que motivo deram para a troca de número",
+        ),
+        Pergunta(
+            "pedido_familia",
+            "E o que ela pediu? Dinheiro, algum código, outra coisa?",
+            "pedido",
+            ("dinheiro", "códig"),
+            "saber o que a pessoa da família pediu",
+        ),
+        Pergunta(
+            "pedido_banco",
+            "E o que pediram? Sua senha, um código, ou para ligar em algum número?",
+            "pedido",
+            ("senha", "códig", "ligar"),
+            "saber o que pediram em nome do banco",
+        ),
+        Pergunta(
+            "link_inss",
+            "Mandaram algum link, para prova de vida ou para atualizar o cadastro?",
+            "pedido",
+            ("link",),
+            "saber se mandaram link em nome do INSS",
+        ),
+        Pergunta(
+            "pedido_geral",
+            "E o que pediram para você fazer?",
+            "pedido",
+            objetivo="saber o que pediram para a pessoa fazer",
+        ),
+        Pergunta(
+            "urgencia",
+            "Falaram que era urgente, ou fizeram alguma ameaça?",
+            "urgencia",
+            ("urgen", "amea"),
+            "saber se houve pressa, prazo ou ameaça",
+        ),
     ]
 }
 

@@ -11,12 +11,16 @@ from functools import lru_cache
 
 from backend import config
 from backend.graph.estado import Estado
+from backend.graph.perguntas import PERGUNTAS, Pergunta, texto_da_pergunta
 from backend.graph.risco import PEDIDOS_SUSPEITOS, nivel
 from backend.graph.veredito import AUTORIZA_PAGAMENTO, com_aviso, orientacao
 
 # O veredito já gasta tempo com a busca na base; acima disso a Alexa fica arriscada.
 TIMEOUT = 3
 TAMANHO = (20, 280)
+TIMEOUT_PERGUNTA = 2
+TAMANHO_PERGUNTA = (10, 180)
+QUEM = {"familia": "alguém da família", "banco": "banco", "inss": "INSS", "loja": "loja", "outro": "outra pessoa"}
 
 SITUACAO = {
     "alto": "risco alto: é muito provavelmente golpe. O sistema avisa a família sozinho, não fale disso.",
@@ -85,6 +89,80 @@ def aceitavel(fala: str, estado: Estado) -> bool:
             return "confirm" in fala.lower()
         case _:
             return "não" in fala.lower()
+
+
+@lru_cache(maxsize=1)
+def _modelo_pergunta():
+    from langchain_openai import ChatOpenAI
+
+    # Mais curto que o do veredito: a interpretação da resposta pode já ter gasto até 4 s neste turno.
+    return ChatOpenAI(model=config.modelo_openai(), timeout=TIMEOUT_PERGUNTA, max_retries=0)
+
+
+def _o_que_ja_sabe(estado: Estado) -> str:
+    fatos = [f"quem procurou: {QUEM[estado['remetente']]}"] if estado.get("remetente") else []
+    if estado.get("numero_novo") is not None:
+        fatos.append("veio de número novo" if estado["numero_novo"] else "veio do número de sempre")
+    if estado.get("desculpa"):
+        fatos.append(f"desculpa dada: {estado['desculpa']}")
+    if estado.get("pedido"):
+        fatos.append(f"pedido: {estado['pedido']}")
+    return "; ".join(fatos) or "ainda pouco"
+
+
+def _prompt_pergunta(estado: Estado, pergunta: Pergunta) -> str:
+    return (
+        "Você é o Guardião, um assistente de voz que ajuda pessoas idosas a perceber golpes. "
+        "A pessoa, muitas vezes nervosa, está te contando o que aconteceu, e você conduz uma "
+        "conversa curta para entender o caso antes de orientar. Escreva o que a Alexa vai falar "
+        "agora, em português do Brasil.\n\n"
+        f"O que a pessoa contou até agora: {' / '.join(estado.get('relato', []))}\n"
+        f"O que você já sabe: {_o_que_ja_sabe(estado)}\n"
+        f"Sua pergunta anterior: {estado.get('texto_da_pergunta') or 'nenhuma'}\n"
+        f"Próxima pergunta (referência): {pergunta.texto}\n"
+        f"Para que serve: {pergunta.objetivo}\n\n"
+        "Regras:\n"
+        "- Comece reagindo de forma natural e acolhedora à última resposta, como alguém de confiança "
+        "conversando com calma, e depois faça a pergunta. No máximo duas frases e uma pergunta só, "
+        "terminando com ponto de interrogação.\n"
+        "- Não repita de volta tudo o que a pessoa disse e não comece do mesmo jeito que a pergunta anterior. "
+        "Varie o começo e não use Entendi toda vez.\n"
+        "- Mantenha o sentido da pergunta de referência e as opções que ela dá. Se ela é de sim ou não, "
+        "continue sendo de sim ou não.\n"
+        "- Chame quem procurou a pessoa do jeito que ela falou (seu neto, sua filha, o banco), "
+        "com o gênero certo, em vez de essa pessoa ou ela.\n"
+        "- Ainda não dê opinião: não diga se parece golpe, não tranquilize e não oriente nada.\n"
+        "- Sem termos técnicos, emojis, listas ou aspas.\n"
+        "Responda só com a fala."
+    )
+
+
+def pergunta_aceitavel(fala: str, pergunta: Pergunta) -> bool:
+    if not TAMANHO_PERGUNTA[0] <= len(fala) <= TAMANHO_PERGUNTA[1]:
+        return False
+    if fala.count("?") != 1 or not fala.endswith("?"):
+        return False
+    # Antes do veredito não tem opinião: nem alarmar, nem tranquilizar.
+    if "golpe" in fala.lower() or AUTORIZA_PAGAMENTO.search(fala) or DIZ_QUE_E_SEGURO.search(fala):
+        return False
+    return all(trecho in fala.lower() for trecho in pergunta.manter)
+
+
+def escrever_pergunta(estado: Estado, pergunta_id: str) -> str:
+    """Pergunta reescrita pelo GPT a partir do que a pessoa contou; se não der, vale a pronta."""
+    pronta = texto_da_pergunta(estado, pergunta_id)
+    # A primeira pergunta é trocada pela abertura da sessão: chamar o GPT só atrasaria o início.
+    if not config.openai_configurado() or not estado.get("respondidas"):
+        return pronta
+    pergunta = PERGUNTAS[pergunta_id]
+    try:
+        resposta = _modelo_pergunta().invoke(
+            _prompt_pergunta(estado, pergunta), config={"run_name": f"escrever_pergunta_{pergunta_id}"}
+        )
+        fala = str(resposta.content).strip().strip('"')
+    except Exception:
+        return pronta
+    return fala if pergunta_aceitavel(fala, pergunta) else pronta
 
 
 def escrever(estado: Estado) -> tuple[str, str]:

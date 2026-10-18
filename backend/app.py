@@ -37,6 +37,8 @@ app = FastAPI(title="Guardião Digital", lifespan=ciclo_de_vida)
 
 def aquecer() -> None:
     """Abre as conexões com a OpenAI antes da primeira fala: a primeira chamada leva ~3 s a mais."""
+    from backend import config
+    from backend.graph.fala import _modelo_pergunta
     from backend.rag.busca import buscar
 
     inicio = time.perf_counter()
@@ -44,6 +46,12 @@ def aquecer() -> None:
         buscar({"remetente": "familia", "pedido": "pix", "relato": ["aquecimento"]})
     except Exception as erro:  # o servidor sobe mesmo sem OpenAI; a busca só é pulada
         log.warning("Aquecimento da busca falhou: %s", type(erro).__name__)
+    if config.openai_configurado():
+        # As perguntas têm só 2 s de limite: sem aquecer, a primeira cairia sempre na pronta.
+        try:
+            _modelo_pergunta().invoke("Responda só: ok", config={"run_name": "aquecimento"})
+        except Exception as erro:
+            log.warning("Aquecimento do GPT falhou: %s", type(erro).__name__)
     log.info("Aquecimento em %.2fs", time.perf_counter() - inicio)
 
 

@@ -19,6 +19,7 @@ class Estado(TypedDict, total=False):
     # Controle do fluxo
     respondidas: list[str]  # ids das perguntas já feitas
     proxima: str | None  # próxima pergunta; None quando já dá para decidir
+    texto_da_pergunta: str  # como a próxima pergunta vai ser falada (do GPT ou a pronta)
 
     # Resultado
     risco: int

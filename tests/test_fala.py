@@ -70,3 +70,49 @@ def test_gpt_fora_do_ar_usa_a_fala_pronta(monkeypatch):
     texto, origem = fala.escrever(ALTO)
     assert origem == "pronta: gpt falhou ou demorou"
     assert "avisar sua família" in texto
+
+
+FAMILIA = {"relato": ["meu neto mandou mensagem"], "respondidas": ["relato"], "remetente": "familia"}
+
+
+@pytest.fixture
+def gpt_pergunta(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "teste")
+
+    def configurar(texto):
+        modelo = SimpleNamespace(invoke=lambda *_args, **_kw: SimpleNamespace(content=texto))
+        monkeypatch.setattr(fala, "_modelo_pergunta", lambda: modelo)
+
+    return configurar
+
+
+def test_usa_a_pergunta_do_gpt(gpt_pergunta):
+    gpt_pergunta("Entendi, seu neto te escreveu. Ele está usando um número novo, que você não conhecia?")
+    assert fala.escrever_pergunta(FAMILIA, "numero_novo").startswith("Entendi, seu neto te escreveu.")
+
+
+@pytest.mark.parametrize(
+    "resposta",
+    [
+        "Seu neto está usando um número novo.",  # sem pergunta
+        "É seu neto mesmo? Ele está num número novo?",  # duas perguntas
+        "Isso pode ser golpe. Ele está usando um número novo?",  # opinião antes do veredito
+        "Entendi. E o que mais ele te falou?",  # perdeu o assunto da pergunta
+    ],
+)
+def test_pergunta_fora_das_regras_volta_para_a_pronta(gpt_pergunta, resposta):
+    gpt_pergunta(resposta)
+    assert fala.escrever_pergunta(FAMILIA, "numero_novo") == (
+        "Entendi. Essa pessoa está usando um número novo, que você não conhecia?"
+    )
+
+
+def test_pergunta_mantem_as_opcoes(gpt_pergunta):
+    gpt_pergunta("Certo. E o que pediram para você?")
+    estado = {**FAMILIA, "remetente": "banco"}
+    assert fala.escrever_pergunta(estado, "pedido_banco").endswith("ou para ligar em algum número?")
+
+
+def test_primeira_pergunta_nao_chama_o_gpt(gpt_pergunta):
+    gpt_pergunta("Oi! Me conta tudo, o que aconteceu?")
+    assert fala.escrever_pergunta({}, "relato") == "Me conta o que aconteceu."

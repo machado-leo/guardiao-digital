@@ -8,7 +8,7 @@
 ![Amazon Alexa](https://img.shields.io/badge/Amazon_Alexa-Skills_Kit-00CAFF?style=flat&logo=amazonalexa&logoColor=white)
 ![Telegram](https://img.shields.io/badge/Telegram-Bot_API-26A5E4?style=flat&logo=telegram&logoColor=white)
 ![Langfuse](https://img.shields.io/badge/Langfuse-Observabilidade-000000?style=flat)
-![Pytest](https://img.shields.io/badge/Pytest-78_testes-0A9EDC?style=flat&logo=pytest&logoColor=white)
+![Pytest](https://img.shields.io/badge/Pytest-85_testes-0A9EDC?style=flat&logo=pytest&logoColor=white)
 ![LGPD](https://img.shields.io/badge/Privacidade-LGPD-2EA44F?style=flat)
 
 **Um assistente de voz que ajuda pessoas idosas a descobrir, na hora, se uma mensagem
@@ -78,6 +78,10 @@ flowchart LR
 - **Fala:** o GPT escreve a fala a partir de uma decisão que **ele não toma**. Se ele
   autorizar pagamento, citar nome de golpe, garantir que é seguro, passar do tamanho ou
   demorar mais de 3 s, vale a fala pronta escrita à mão.
+- **Perguntas:** o GPT também reescreve cada pergunta a partir do que a pessoa contou
+  ("Seu neto explicou por que trocou de número?"), sem dar opinião antes do veredito. Se
+  sair sem pergunta, com mais de uma, sem as opções da original, falando em golpe ou
+  demorando mais de 2 s, vale a pergunta pronta.
 - **Tempo:** cada fala responde entre 0,01 e ~3,5 s, dentro dos ~8 s que a Alexa espera.
 
 ## Privacidade (LGPD)
@@ -100,7 +104,7 @@ Detalhes em [`docs/privacidade.md`](docs/privacidade.md).
 | `backend/observabilidade.py` | Traces, tags e scores no Langfuse |
 | `data/golpes/golpes.json` | Os 26 golpes curados à mão, cada um com sinais, ação e fonte |
 | `skill/` | Modelo de interação da Alexa, ícones e script do túnel ([guia](skill/README.md)) |
-| `tests/` | 78 testes: golpes, casos legítimos, fala, endpoint e alertas |
+| `tests/` | 85 testes: golpes, casos legítimos, fala, endpoint e alertas |
 | `docs/` | [Projeto](docs/projeto.md), [roadmap](docs/roadmap.md) e [privacidade](docs/privacidade.md) |
 
 ## Rodando localmente
@@ -127,7 +131,7 @@ Sem a chave da OpenAI, o Guardião funciona só com as regras e com as falas pro
 
 ```bash
 python -m backend.cli     # conversa no terminal, mostra risco, motivos e golpe parecido
-python -m pytest          # 78 testes, só com as regras (sem GPT, Langfuse nem Telegram)
+python -m pytest          # 85 testes, só com as regras (sem GPT, Langfuse nem Telegram)
 ```
 
 ### Ligar na Alexa
@@ -146,7 +150,7 @@ O passo a passo do console da Alexa, do beta test e da Echo Dot está em
 ## Observabilidade
 
 Cada conversa vira uma sessão no Langfuse, com um trace por fala:
-- **Nós do grafo** e **chamadas do GPT com nome**: `interpretar_relato`, `classificar_<pergunta>` e `escrever_fala`.
+- **Nós do grafo** e **chamadas do GPT com nome**: `interpretar_relato`, `classificar_<pergunta>`, `escrever_pergunta_<pergunta>` e `escrever_fala`.
 - **Tags** `alexa` ou `cli`, e o intent da Alexa que capturou cada fala.
 - **Scores da sessão:** `risco`, `nivel`, `alerta_familia`, `golpe_parecido`, `perguntas`
   e `origem_da_fala` (se a fala veio do GPT ou foi a pronta, e por quê).
