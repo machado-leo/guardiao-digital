@@ -1,6 +1,6 @@
-# Entrega 2 – Construa (rascunho do formulário)
+# Entrega 2 – Construa (respostas do formulário)
 
-Respostas para colar no formulário do Simula & Simplifica. Prazo para o 2º Ranking: **20/10**.
+Respostas enviadas no formulário do Simula & Simplifica. Prazo para o 2º Ranking: **20/10**.
 
 ## Abordagem
 
@@ -8,14 +8,14 @@ Agente de IA
 
 ## Ferramentas, linguagens ou plataformas utilizadas
 
-Python 3.11 com FastAPI (endpoint HTTPS que recebe a Alexa) e LangGraph (grafo de decisão
-com memória da conversa). Alexa Skills Kit com uma skill própria em pt-BR, "Guardião
-Digital", testada numa Echo Dot pelo beta test. OpenAI: GPT para interpretar respostas
-livres e escrever a fala final, e embeddings para a busca. ChromaDB como banco vetorial,
-com uma base de 26 golpes curada à mão de fontes oficiais (Febraban, INSS, Banco Central,
-Correios, Receita Federal, CERT.br). Bot do Telegram para o alerta à família. Langfuse
-para observabilidade, com números mascarados por causa da LGPD. Cloudflare Tunnel para
-expor o servidor local em HTTPS. Pytest com 85 testes automatizados.
+- Python 3.11 com FastAPI (endpoint HTTPS que recebe a Alexa) e LangGraph (grafo de decisão com memória da conversa).
+- Alexa Skills Kit com uma skill própria em pt-BR, "Guardião Digital", testada numa Echo Dot pelo beta test.
+- OpenAI: GPT para interpretar respostas livres, reescrever as perguntas e escrever a fala final, e embeddings para a busca.
+- ChromaDB como banco vetorial, com uma base de 26 golpes curada à mão de fontes oficiais (Febraban, INSS, Banco Central, Correios, Receita Federal, CERT.br).
+- Bot do Telegram para o alerta à família (escolhi por ser mais simples de integrar que o WhatsApp, que fica como melhoria futura).
+- Langfuse para observabilidade, com mascaramento de números por causa da LGPD (desligado só nos testes com dados fictícios, para analisar os traces completos).
+- Cloudflare Tunnel para expor o servidor local em HTTPS (o ideal seria uma VM isolada com domínio próprio, mas optei por algo simples nesta etapa).
+- Pytest com 85 testes automatizados.
 
 ## Regras de negócio, cálculos e condições
 
@@ -48,66 +48,49 @@ expor o servidor local em HTTPS. Pytest com 85 testes automatizados.
 
 ## Como você utilizou a IA para construir a solução
 
-> ⚠️ Substitua pelo prompt que você realmente usou, se tiver guardado. O texto abaixo é
-> só um modelo.
+O desenvolvimento foi conduzido em parceria com ferramentas de IA (Claude Code e Gemini), seguindo um planejamento estruturado em fases:
 
-Usei o Claude Code como par de programação no repositório inteiro: montar o grafo do
-LangGraph, escrever os testes, calibrar a busca e ajustar o tempo de resposta para a
-Alexa. Principal prompt:
-
-"Quero um assistente de voz na Alexa para idosos descobrirem se uma mensagem é golpe. A
-Alexa só cuida da voz: monte um backend em FastAPI com um grafo em LangGraph que pergunta
-só o que falta (remetente, número novo, pedido, urgência), compara o relato com uma base
-de golpes brasileiros no ChromaDB, calcula um risco de 0 a 100 por uma tabela de sinais
-explicáveis e avisa a família pelo Telegram quando o risco for alto. O GPT pode escrever a
-fala, mas nunca decide o risco e nunca pode dizer 'pode pagar'. Cada resposta tem que
-caber no tempo limite da Alexa."
+1. Planejamento e Roadmap:
+   - Levantamento dos tipos de golpes mais comuns contra idosos no Brasil (falso parente, falso suporte de banco, INSS).
+   - Definição do escopo da Alexa: atuar estritamente como interface de voz, mantendo o processamento e as regras em um backend dedicado.
+   - Desenho do fluxo de tomada de decisão (perguntas dinâmicas, regras determinísticas de risco e limites rígidos de tempo para a Alexa).
+2. Backend e Arquitetura (FastAPI + LangGraph):
+   - Construção do grafo no LangGraph com nós isolados: extração dos campos, checagem vetorial, pontuação de risco e geração de fala.
+   - Divisão clara de papéis: regras de palavras-chave extraem os campos da conversa e o GPT só entra quando elas não entendem; regras fixas calculam o score (0 a 100); e o GPT ajusta a linguagem das perguntas e da fala final, sem nunca decidir o risco.
+3. Validação, Testes e Calibração:
+   - Criação da base de golpes no ChromaDB com testes de distância de cosseno para evitar falsos positivos.
+   - Testes unitários e de integração simulando cenários incompletos e calibrando timeouts para manter as respostas entre ~1 e ~3,5 segundos, dentro do limite de ~8 s da Alexa.
+   - Integração do alerta silencioso no Telegram para a família em casos de alto risco.
 
 ## Um erro ou dificuldade técnica e como resolveu
 
-A busca na base de golpes dava falsos positivos. Um relato vago como "uma mulher pediu
-dinheiro" era considerado parecido com um golpe de banco (distância 0,41), e o Guardião
-dava a orientação errada: um pedido de código chegou a receber a orientação de um golpe
-de PIX. Para resolver, rodei várias conversas de teste e medi as distâncias. Os acertos
-reais ficavam até ~0,29, e os casos sem relação passavam de 0,6. A solução teve duas
-partes: filtrar a base pelo mesmo pedido e remetente antes de comparar os textos, e só
-aceitar o caso parecido abaixo de um limite calibrado. Depois disso, cada orientação passou
-a vir de um golpe do mesmo tipo.
-
-Outras dificuldades, se quiser trocar:
-- A Alexa transcreve "um" e "uma" como "1", e "uma vez" virava valor em dinheiro. Agora
-  valores pequenos não contam como dinheiro.
-- A Alexa mostrava "Erro ao comunicar-se com a Skill" sem nada chegar no servidor. A causa
-  era o tipo de certificado do endpoint: com o túnel do Cloudflare é preciso marcar a opção
-  de certificado *wildcard*.
-- O tempo de resposta: a Alexa espera ~8 s, e RAG + GPT podia passar disso. Coloquei um
-  limite de 3 s na fala do GPT, com uma fala pronta de reserva. Cada fala agora responde
-  entre 0,01 e ~3,5 s.
+1. A busca vetorial pura falhava em relatos vagos (ex.: "uma mulher pediu dinheiro" aproximava-se de falsos suportes bancários com distância 0,41).
+2. O pareamento incorreto gerava orientações cruzadas críticas, como tratar pedidos de código de autenticação com instruções voltadas a transferências PIX.
+3. Testes empíricos mapearam os intervalos reais de distância de cosseno: correspondências legítimas ficavam em até ~0,29, enquanto relatos sem relação superavam 0,60.
+4. A correção combinou pré-filtragem por metadados (remetente e pedido) com um limiar de corte de distância, garantindo que a base só retorne referências do mesmo tipo de golpe.
 
 ## Como você testou a solução
 
-Testei em três níveis. Primeiro, 85 testes automatizados (pytest), que rodam só com as
-regras: os golpes da base, casos legítimos que não podem gerar alarme (o banco avisando
-que a fatura fechou, sem pedir nada, por exemplo), conversas completas de várias falas, as
-regras da fala, o endpoint da Alexa e o alerta do Telegram. Segundo, conversas por texto
-no terminal (CLI), que mostram o risco, os motivos e o golpe parecido de cada caso.
-Terceiro, de ponta a ponta numa Echo Dot real: "Alexa, abre o Guardião Digital", contar o
-golpe do falso parente pedindo PIX de um número novo, receber a orientação de não pagar e
-ver o alerta chegar no Telegram da família. Também testei um caso legítimo, que foi
-tranquilizado sem alerta. Cada conversa vira um trace no Langfuse, onde conferi o caminho
-do grafo, o risco, o tempo de cada fala e se a fala veio do GPT ou da reserva. Isso
-resolve o gargalo da Entrega 1: o idoso não precisa mais esperar um familiar responder,
-recebe a verificação na hora e a família é avisada automaticamente.
+A validação do sistema foi estruturada em quatro níveis de teste e observabilidade:
 
-## Imagens (1 a 5)
+1. Testes Automatizados de Regras e Integração (85 casos com pytest):
+   - Cobertura dos padrões de golpes catalogados e de mensagens legítimas de controle (ex.: avisos de fatura sem solicitação de dados, garantindo ausência de falso alarme).
+   - Validação de fluxos conversacionais de múltiplos turnos, regras de segurança na fala e nas perguntas, contrato do endpoint da Alexa e disparo da notificação para o Telegram.
+2. Simulação Interativa via Linha de Comando (CLI):
+   - Execução de cenários textuais com inspeção direta do cálculo de risco (0 a 100), dos fatores que somaram pontos e do golpe correspondente retornado pelo ChromaDB.
+3. Teste Ponta a Ponta em Hardware Real (Echo Dot):
+   - Caso crítico (falso parente com número novo pedindo PIX): acionamento por voz com "Alexa, abre o Guardião Digital", orientação imediata para não transferir e disparo automático do alerta no Telegram da família.
+   - Caso legítimo: resposta tranquilizadora sem alerta à família.
+   - Na prática a diferença ficou clara: a Alexa comum responde de forma genérica ou diz que não pode ajudar, enquanto o Guardião conduz a verificação e orienta na hora.
+4. Observabilidade e Auditoria (Langfuse):
+   - Registro de cada sessão via traces, permitindo auditar o caminho percorrido no grafo, a latência de cada nó, a pontuação de risco e se a fala final foi gerada pelo GPT ou substituída pela fala pronta de segurança.
 
-1. Echo Dot ou app da Alexa com a skill aberta (`skill/assets/skill-app-alexa.jpg`)
-2. Alerta chegando no Telegram da família
-3. Trace de uma conversa no Langfuse (caminho do grafo, risco, scores)
-4. Código: `backend/graph/risco.py` (tabela de sinais) ou o grafo em `backend/graph/grafo.py`
-5. Terminal com os 85 testes passando ou uma conversa no CLI mostrando o risco
+A abordagem resolve o gargalo da Entrega 1: o idoso recebe a verificação na hora, direto pelo dispositivo de voz, sem depender da resposta de um parente, e a família é avisada automaticamente quando o risco é alto.
 
-## Autoavaliação
+## Imagens (5)
 
-Respostas pessoais: evolução no uso de IA (1 a 5), satisfação com a etapa (1 a 5),
-recomendaria o projeto (1 a 10) e facilidade da plataforma (1 a 5).
+1. `skill-app-alexa`: a skill Guardião Digital ativa no app da Alexa
+2. `codigo`: `backend/graph/risco.py`, a tabela de sinais de risco
+3. `langfuse-e-servidor`: trace de uma conversa no Langfuse e o servidor rodando com o `subir.sh`
+4. `Screenshot_1`: conversa no terminal e o alerta chegando no Telegram
+5. `teste2`: casos legítimos e de risco passando, e os 85 testes no total
