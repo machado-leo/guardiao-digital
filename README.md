@@ -105,7 +105,7 @@ Detalhes em [`docs/privacidade.md`](docs/privacidade.md).
 | `data/golpes/golpes.json` | Os 26 golpes curados à mão, cada um com sinais, ação e fonte |
 | `skill/` | Modelo de interação da Alexa, ícones e script do túnel ([guia](skill/README.md)) |
 | `tests/` | 85 testes: golpes, casos legítimos, fala, endpoint e alertas |
-| `docs/` | [Projeto](docs/projeto.md), [roadmap](docs/roadmap.md) e [privacidade](docs/privacidade.md) |
+| `docs/` | [Projeto](docs/projeto.md), [roadmap](docs/roadmap.md), [privacidade](docs/privacidade.md) e [roteiro do vídeo](docs/roteiro-video.md) |
 
 ## Rodando localmente
 
