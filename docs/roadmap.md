@@ -2,6 +2,8 @@
 
 Etapa 2 até **20/10** (2º Ranking em 21/10) · Etapa 3 de **21/10 a 29/10**.
 
+**Resultado final: 🥈 2º lugar** no Simula & Simplifica (edição 2026.2).
+
 ## 1. Validações iniciais
 - [x] Criar a skill e confirmar que ela abre na Echo Dot (nome final: "Guardião Digital"; a Dot de outra conta acessa pelo beta test)
 - [x] Testar o `AMAZON.SearchQuery` em pt-BR com palavras de apoio (`FraseIntent`)

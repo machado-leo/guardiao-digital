@@ -16,6 +16,8 @@ ou ligação é golpe, e avisa a família quando o risco é alto.**
 
 Projeto do **Simula & Simplifica: Algoritmos em Ação** (edição 2026.2).
 
+> 🥈 **2º lugar** no Simula & Simplifica: Algoritmos em Ação (edição 2026.2).
+
 > "Alexa, abre o Guardião Digital."
 > "Oi, eu sou o Guardião. Me conta o que aconteceu."
 > "Meu neto mandou mensagem de um número novo pedindo dinheiro no pix, disse que era urgente."
@@ -158,8 +160,9 @@ Cada conversa vira uma sessão no Langfuse, com um trace por fala:
 ## Cronograma
 
 - **Etapa 1 – Observe:** entregue (nota ponderada 9,35).
-- **Etapa 2 – Construa:** entrega até 20/10 (2º Ranking liberado em 21/10).
-- **Etapa 3 – Apresente:** de 21/10 a 29/10, com a live final às 19h.
+- **Etapa 2 – Construa:** entregue em 20/10.
+- **Etapa 3 – Apresente:** vídeo pitch entregue; resultado na live final de 29/10.
+- **Resultado final:** 🥈 **2º lugar**.
 
 O que está feito e o que falta: [`docs/roadmap.md`](docs/roadmap.md).
 
