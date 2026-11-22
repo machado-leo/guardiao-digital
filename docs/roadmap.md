@@ -54,15 +54,11 @@ Etapa 2 até **20/10** (2º Ranking em 21/10) · Etapa 3 de **21/10 a 29/10**.
 - [ ] Testar mais relatos na Dot, olhando os traces: as respostas curtas pelo `RespostaIntent` ainda saem distorcidas às vezes
 
 ## 9. Apresentação
-- [ ] Gravar a Alexa comum respondendo ao mesmo golpe
-- [ ] Preparar o slide de contexto (o golpe e o gargalo da Etapa 1)
-- [ ] (Opcional) Mostrar o caminho do grafo e os scores, abrindo a sessão no Langfuse
-- [ ] Deixar o plano B pronto: simulador do console da Amazon
-- [ ] Ensaiar a demo em menos de 3 minutos
-- [ ] **Antes da demo:** voltar `LANGFUSE_MASCARAR=true` no `.env`, como promete a política de privacidade
-- [ ] **Antes da demo:** subir com `RECARREGAR=0 ./skill/subir.sh`
+- [x] Vídeo pitch entregue na Etapa 3 (roteiro em [`roteiro-video.md`](roteiro-video.md))
+- [x] Resultado: 🥈 2º lugar na live de 29/10
+- [x] Voltar `LANGFUSE_MASCARAR=true` no `.env`, como promete a política de privacidade
 
-## 10. Extras (só se sobrar tempo)
+## 10. Próximos passos
 - [ ] Script de RSS para adicionar golpes novos à base
 - [x] Reconhecer farmácia, mercado e prefeitura como remetentes conhecidos
 
